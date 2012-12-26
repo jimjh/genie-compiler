@@ -16,7 +16,7 @@ All of these operations begin with obtaining a lock on the directory at `LESSON_
 Clones the git repository at the given URL to the output directory.
 
 ```sh
-$> lamp clone [--user=USER] [--branch=BRANCH] [--] GIT_URL OUTPUT_DIR
+$> lamp clone [--user=USER] [--branch=BRANCH] [--] GIT_URL [OUTPUT_DIR]
 ```
 
 `BRANCH` defaults to `master`. If `OUTPUT_DIR` is not present, then `USER` must be given and the repository will be
@@ -39,7 +39,7 @@ repository.
 Generates compressed HTML files from the lesson source at `LESSON_PATH`.
 
 ```sh
-$> lamp compile INPUT_DIR OUTPUT_DIR
+$> lamp compile INPUT_DIR [OUTPUT_DIR]
 ```
 
 `OUTPUT_DIR` defaults to `{LESSON_PATH}/.genie-cache`. Files and directories at static paths (defined in `manifest.json`)
