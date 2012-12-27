@@ -17,15 +17,13 @@ All of these operations begin with obtaining a lock on the directory at `LESSON_
 Clones the git repository at the given URL to the output directory.
 
 ```sh
-$> lamp clone [--user=USER] [--branch=BRANCH] [--] GIT_URL [LESSON_PATH]
+$> lamp clone --user=USER [--branch=BRANCH] [--] GIT_URL
 ```
 
-`BRANCH` defaults to `master`. If `LESSON_PATH` is not present, then `USER`
-must be given and the repository will be cloned to `{ROOT}/{USER}`. Upon
-cloning, the worker performs a basic validation on the repository. The
+`BRANCH` defaults to `master`, and the repository is cloned to `{ROOT}/{USER}`.
+Upon cloning, the worker performs a basic validation on the repository. The
 validation rules are:
 
-- does not contain a `.genie-cache` directory
 - does not have a `@@genie@@` branch
 - contains a valid `manifest.json`
 - contains a valid `index.md`

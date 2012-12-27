@@ -25,4 +25,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
 
+  gem.add_dependency 'grit', '~> 2.5.0'
+  gem.add_dependency 'aladdin'
+
 end
