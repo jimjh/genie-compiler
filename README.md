@@ -1,5 +1,6 @@
 # genie-worker
-The worker is called upon to compile lessons from their source files into a web-publishable format.
+The worker is called upon to compile lessons from their source files into a
+web-publishable format.
 
 ## Configuration
 <dl>
@@ -16,24 +17,26 @@ All of these operations begin with obtaining a lock on the directory at `LESSON_
 Clones the git repository at the given URL to the output directory.
 
 ```sh
-$> lamp clone [--user=USER] [--branch=BRANCH] [--] GIT_URL [OUTPUT_DIR]
+$> lamp clone [--user=USER] [--branch=BRANCH] [--] GIT_URL [LESSON_PATH]
 ```
 
-`BRANCH` defaults to `master`. If `OUTPUT_DIR` is not present, then `USER` must be given and the repository will be
-cloned to `{ROOT}/{USER}`. Upon cloning, the worker performs a basic validation on the repository. The validation rules
-are:
+`BRANCH` defaults to `master`. If `LESSON_PATH` is not present, then `USER`
+must be given and the repository will be cloned to `{ROOT}/{USER}`. Upon
+cloning, the worker performs a basic validation on the repository. The
+validation rules are:
 
 - does not contain a `.genie-cache` directory
 - does not have a `@@genie@@` branch
 - contains a valid `manifest.json`
 - contains a valid `index.md`
 
-If the validation fails, the program deletes the directory, and terminates with an error code. Otherwise, the
-worker creates a new `@@genie@@` branch and deletes the original branch. Next, it adds and commits a marker file to
+If the validation fails, the program deletes the directory, and terminates with
+an error code. Otherwise, the worker creates a new `@@genie@@` branch and
+deletes the original branch. Next, it adds and commits a marker file to
 indicate that the directory is a valid lesson directory.
 
-Finally, the worker executes `git prune` and `git gc --aggressive` to clean things up and reduce the size of the
-repository.
+Finally, the worker executes `git prune` and `git gc --aggressive` to clean
+things up and reduce the size of the repository.
 
 ### Compile Lesson
 Generates compressed HTML files from the lesson source at `LESSON_PATH`.
