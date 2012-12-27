@@ -1,3 +1,5 @@
+# ~*~ encoding: utf-8 ~*~
 module Lamp
-  VERSION = "0.0.1"
+  # version number
+  VERSION = '0.0.1'
 end

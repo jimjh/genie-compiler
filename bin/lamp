@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
+# ~*~ encoding: utf-8 ~*~
 
-require 'lamp'
+$:.unshift File.join File.dirname(__FILE__), *%w(.. lib)
+require 'lamp/commands'

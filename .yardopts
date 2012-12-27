@@ -1,0 +1,4 @@
+--title "Lamp"
+lib/**/*.rb -
+README.md
+LICENSE
