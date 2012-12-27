@@ -39,7 +39,7 @@ repository.
 Generates compressed HTML files from the lesson source at `LESSON_PATH`.
 
 ```sh
-$> lamp compile INPUT_DIR [OUTPUT_DIR]
+$> lamp compile LESSON_PATH [OUTPUT_DIR]
 ```
 
 `OUTPUT_DIR` defaults to `{LESSON_PATH}/.genie-cache`. Files and directories at static paths (defined in `manifest.json`)
