@@ -1,8 +1,7 @@
 # ~*~ encoding: utf-8 ~*~
 require 'lamp/version'
+require 'lamp/constants'
+require 'lamp/lesson'
 
-# Lamp a.k.a Genie Worker is responsible for compiling lesson sources into a
-# Rails friendly format and keeping the sources up to date.
-module Lamp
-  # Your code goes here...
-end
+# Lamp a.k.a Genie Worker is responsible for compiling lesson sources.
+module Lamp; end
