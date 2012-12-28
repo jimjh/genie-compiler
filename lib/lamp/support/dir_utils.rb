@@ -26,8 +26,8 @@ module Lamp
       def copy_secure(source, destination, files)
         files.each do |file|
           path = (source + file).cleanpath.to_s
-          if path.starts_with?(source.to_s)
-            FileUtils.cp_r path, destination, verbose: true
+          if path.starts_with?(source.to_s + File::SEPARATOR)
+            FileUtils.cp_r path, destination
           else Lamp.logger.warn { 'Ignoring suspicious path %s' % path }
           end
         end
