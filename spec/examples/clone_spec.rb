@@ -15,7 +15,7 @@ describe 'clone' do
         system <<-eos
           (
             git init
-            touch manifest.json && git add manifest.json
+            echo {} > manifest.json && git add manifest.json
             touch index.md && git add index.md
             git ci -m 'first commit'
           ) &> /dev/null

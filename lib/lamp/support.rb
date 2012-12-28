@@ -1,4 +1,5 @@
 # ~*~ encoding: utf-8 ~*~
+require 'lamp/support/dir_utils'
 require 'lamp/support/settings'
 require 'lamp/support/logger'
 

@@ -11,29 +11,18 @@ module Lamp
 
     # Clones the git repository at the given URL to +path+. If the directory
     # at the given path exists, it's emptied.
-    # @param [String] url           git URL
-    # @param [String] path          path of target directory
-    # @option opts [String] branch  branch name
+    # @param        [String]    url         git URL
+    # @param        [Pathaname] path        path of target directory
+    # @option opts  [String]    branch      branch name
     # @return [Grit::Repo] repository
     def clone_from(url, path, opts)
-      ensure_empty path
+      Support::DirUtils.ensure_empty path
       flags = CLONE_FLAGS + ['--branch=' + opts[:branch]]
       Open3.popen3 'git', 'clone', *flags,
-        url, path do |i, o, e, t|
+        url, path.to_s do |i, o, e, t|
           raise GitCloneError.new e.read unless t.value.success?
         end
       Grit::Repo.new path
-    end
-
-    private
-
-    # Ensures that the given path is an empty directory.
-    # @param [String] dir         path to directory
-    def ensure_empty(dir)
-      return unless File.exist? dir
-      Lamp.logger.warn { 'Overwriting directory at %s' % dir }
-      FileUtils.remove_entry_secure dir
-      FileUtils.mkdir_p dir
     end
 
   end
