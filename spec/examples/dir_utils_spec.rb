@@ -42,7 +42,7 @@ describe 'DirUtils' do
 
       destination = Pathname.new Dir.mktmpdir
       Lamp::Support::DirUtils.copy_secure @dir, destination,
-        ['x', '..', '/', '.', './..', '/..', '../..//']
+        %w(x .. / . ./.. /.. ../..// // /// .///)
 
       (destination+'x').should be_file
       IO.read(destination+'x').should eq rand_text
