@@ -1,7 +1,11 @@
 # ~*~ encoding: utf-8 ~*~
 module Lamp
-  # @todo FIXME make these configurable
-  ROOT = '/tmp/genie'
-  # @todo FIXME allow configuration
-  LOG_OUTPUT = STDOUT
+
+  DEFAULTS = {
+    root:           '/tmp/genie',
+    log_output:     STDOUT
+  }
+
+  CONFIG_FILE = '/usr/local/etc/genie/worker'
+
 end
