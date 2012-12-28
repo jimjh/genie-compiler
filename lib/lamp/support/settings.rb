@@ -17,7 +17,12 @@ module Lamp
       # a name of the file to read as it's argument. We can also pass in some
       # options, but at the moment it's being used to allow per-environment
       # overrides in Rails.
-      # @param [String|Hash] arg            filename or settings hash
+      #
+      # The first argument can be either:
+      # - the path to a configuration file, or
+      # - a hash containing the configuration options
+      #
+      # @return [Hash] settings
       def load!(*args)
         case (first = args.shift)
         when nil then raise ArgumentError.new "wrong number of arguments"
