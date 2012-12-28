@@ -15,7 +15,7 @@ module Lamp
     # @param [String] path          path of target directory
     # @option opts [String] branch  branch name
     # @return [Grit::Repo] repository
-    def clone(url, path, opts)
+    def clone_from(url, path, opts)
       ensure_empty path
       flags = CLONE_FLAGS + ['--branch=' + opts[:branch]]
       Open3.popen3 'git', 'clone', *flags,

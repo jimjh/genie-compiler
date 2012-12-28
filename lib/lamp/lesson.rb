@@ -33,10 +33,10 @@ module Lamp
       # @raise [GitCloneError]      if the clone operation failed.
       # @raise [InvalidLessonError] if the given lesson is invalid.
       # @return [Lesson]            lesson
-      def clone(url, subpath, opts={})
+      def clone_from(url, subpath, opts={})
         # TODO: lock
         path = File.join SOURCE_PATH, subpath
-        repo = Git.clone url, path, DEFAULTS.merge(opts)
+        repo = Git.clone_from url, path, DEFAULTS.merge(opts)
         begin Lesson.new repo
         rescue => e # clean up in case of errors
           FileUtils.remove_entry_secure repo.working_dir

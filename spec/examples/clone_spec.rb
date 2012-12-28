@@ -30,7 +30,7 @@ describe 'clone' do
     end
 
     it 'should default to the master branch' do
-      lesson = Lamp::Lesson.clone url, 'test'
+      lesson = Lamp::Lesson.clone_from url, 'test'
       lesson.repo.head.commit.id.should eq @master
       lesson.rm
     end
@@ -45,14 +45,14 @@ describe 'clone' do
         eos
       end
       commit = Grit::Repo.new(@fake_repo).head.commit.id
-      lesson = Lamp::Lesson.clone url, 'test', branch: 'x'
+      lesson = Lamp::Lesson.clone_from url, 'test', branch: 'x'
       lesson.repo.head.commit.id.should eq commit
       lesson.rm
     end
 
     it 'should raise a GitCloneError if the repository does not exist' do
       expect do
-        Lamp::Lesson.clone 'random/dot.git', 'test'
+        Lamp::Lesson.clone_from 'random/dot.git', 'test'
       end.to raise_error Lamp::Git::GitCloneError
     end
 
@@ -64,7 +64,7 @@ describe 'clone' do
         eos
       end
       expect do
-        Lamp::Lesson.clone url, 'test'
+        Lamp::Lesson.clone_from url, 'test'
       end.to raise_error Lamp::Lesson::MissingIndexError
     end
 
@@ -76,7 +76,7 @@ describe 'clone' do
         eos
       end
       expect do
-        Lamp::Lesson.clone url, 'test'
+        Lamp::Lesson.clone_from url, 'test'
       end.to raise_error Lamp::Lesson::MissingManifestError
     end
 
@@ -85,7 +85,7 @@ describe 'clone' do
       rand = SecureRandom.uuid
       FileUtils.mkdir_p dir
       IO.write File.join(dir, 'x'), rand
-      Lamp::Lesson.clone url, 'test'
+      Lamp::Lesson.clone_from url, 'test'
       File.directory?(dir).should be_true
       File.exist?(File.join(dir, Aladdin::Config::FILE)).should be_true
       File.exist?(File.join(dir, 'x')).should be_false
