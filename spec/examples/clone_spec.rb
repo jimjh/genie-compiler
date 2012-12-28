@@ -6,6 +6,9 @@ describe 'clone' do
 
   context 'given a fake repository' do
 
+    before(:all) { Lamp.settings.load! root: Dir.mktmpdir }
+    after(:all)  { FileUtils.remove_entry_secure Lamp.settings.root }
+
     before(:each) do
       @fake_repo = Dir.mktmpdir
       Dir.chdir @fake_repo do
@@ -24,8 +27,6 @@ describe 'clone' do
     let(:url) { File.join(@fake_repo, '.git') }
 
     after(:each) do
-      # TODO: use a test root
-      FileUtils.remove_entry_secure Lamp::ROOT if File.exist? Lamp::ROOT
       FileUtils.remove_entry_secure @fake_repo
     end
 
@@ -81,7 +82,7 @@ describe 'clone' do
     end
 
     it 'should overwrite any existing lessons.' do
-      dir = File.join(Lamp::Lesson::SOURCE_PATH, 'test')
+      dir = File.join(Lamp::Lesson.source_path, 'test')
       rand = SecureRandom.uuid
       FileUtils.mkdir_p dir
       IO.write File.join(dir, 'x'), rand

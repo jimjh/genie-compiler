@@ -17,13 +17,17 @@ module Lamp
       branch:       'master',
     }
 
-    # Path to lesson sources.
-    SOURCE_PATH = File.join(ROOT, 'source')
-
-    # Path to compiled lessons.
-    COMPILED_PATH = File.join(ROOT, 'compiled')
-
     class << self
+
+      # Path to lesson sources.
+      def source_path
+        File.join(Lamp.settings.root, 'source')
+      end
+
+      # Path to compiled lessons.
+      def compiled_path
+        File.join(Lamp.settings.root, 'compiled')
+      end
 
       # Clones the git repository at the given URL to
       # +{ROOT}/source/{LESSON_PATH}+.
@@ -35,7 +39,7 @@ module Lamp
       # @return [Lesson]            lesson
       def clone_from(url, subpath, opts={})
         # TODO: lock
-        path = File.join SOURCE_PATH, subpath
+        path = File.join source_path, subpath
         repo = Git.clone_from url, path, DEFAULTS.merge(opts)
         Lamp.logger.info { 'Successfully cloned from %s to %s' % [url, path] }
         begin Lesson.new repo
@@ -51,8 +55,8 @@ module Lamp
       # Ensures that the source and compiled directories exist.
       # @return [Void]
       def prepare_directories
-        FileUtils.mkdir_p SOURCE_PATH
-        FileUtils.mkdir_p COMPILED_PATH
+        FileUtils.mkdir_p source_path
+        FileUtils.mkdir_p compiled_path
       end
 
     end

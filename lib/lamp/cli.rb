@@ -9,6 +9,7 @@ module Lamp
 
     desc 'clone GIT_URL LESSON_PATH', 'Clones the git repository at GIT_URL to LESSON_PATH'
     option :branch, type: :string, default: Lesson::DEFAULTS[:branch]
+    # +lamp clone+
     def clone(url, subpath)
       Lesson::clone_from url, subpath, branch: options[:branch]
     end

@@ -15,7 +15,7 @@ module Lamp
 
       # @return [Logger] logger
       def logger
-        @__logger__ ||= ::Logger.new(Lamp::LOG_OUTPUT)
+        @__logger__ ||= ::Logger.new(settings.log_output)
       end
 
     end
