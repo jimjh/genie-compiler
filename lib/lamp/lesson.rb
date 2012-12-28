@@ -37,8 +37,10 @@ module Lamp
         # TODO: lock
         path = File.join SOURCE_PATH, subpath
         repo = Git.clone_from url, path, DEFAULTS.merge(opts)
+        Lamp.logger.info { 'Successfully cloned from %s to %s' % [url, path] }
         begin Lesson.new repo
         rescue => e # clean up in case of errors
+          Lamp.logger.error(e.message)
           FileUtils.remove_entry_secure repo.working_dir
           raise e
         end
@@ -79,6 +81,7 @@ module Lamp
     def remove
       # TODO
       FileUtils.remove_entry_secure repo.working_dir
+      Lamp.logger.info { 'Removed directory at %s' % repo.working_dir }
     end
     alias :rm :remove
 

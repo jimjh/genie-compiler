@@ -17,8 +17,6 @@ end
 $:.unshift File.join(Test::ROOT, '..', 'lib')
 $:.unshift Test::ROOT
 
-# configure test environment
-require 'lamp'
 require 'rspec'
 
 # Redirects stderr and stdout to /dev/null.
@@ -41,3 +39,6 @@ RSpec.configure do |config|
   config.before(:all) { silence_output }
   config.after(:all) { enable_output }
 end
+
+require 'lamp'
+Lamp.logger.level = Logger::FATAL

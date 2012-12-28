@@ -31,6 +31,7 @@ module Lamp
     # @param [String] dir         path to directory
     def ensure_empty(dir)
       return unless File.exist? dir
+      Lamp.logger.warn { 'Overwriting directory at %s' % dir }
       FileUtils.remove_entry_secure dir
       FileUtils.mkdir_p dir
     end
