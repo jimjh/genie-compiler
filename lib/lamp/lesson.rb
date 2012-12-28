@@ -5,81 +5,82 @@ require 'aladdin/config'
 
 module Lamp
 
-  # A lesson begins as a git repository.
+  # A lesson begins as a git repository and ends as a set of compiled html
+  # files.
   class Lesson
-
-    # FIXME
-    ROOT = '/tmp'
-
-    # Name of branch where we do our work. Should be sufficiently unique.
-    DIRTY_BRANCH = '@@genie@@'
 
     # Name of index file.
     INDEX_FILE = 'index.md'
 
-    # Default options for public interface
+    # Default options for public interface.
     DEFAULTS = {
       branch:       'master',
     }
 
+    # Path to lesson sources.
+    SOURCE_PATH = File.join(ROOT, 'source')
+
+    # Path to compiled lessons.
+    COMPILED_PATH = File.join(ROOT, 'compiled')
+
     class << self
 
-      # Clones the git repository at the given URL to +{ROOT}/{user}+.
-      # @param [String] user              some unique user ID
-      # @param [String] URL               git URL
+      # Clones the git repository at the given URL to
+      # +{ROOT}/source/{LESSON_PATH}+.
+      # @param [String] url               git URL
+      # @param [String] subpath           lesson path
       # @option opts [String] branch      branch name, defaults to master
       # @raise [GitCloneError]      if the clone operation failed.
       # @raise [InvalidLessonError] if the given lesson is invalid.
       # @return [Lesson]            lesson
-      def clone(user, url, opts={})
+      def clone(url, subpath, opts={})
         # TODO: lock
-        opts, path = DEFAULTS.merge(opts), File.join(ROOT, user)
-        FileUtils.mkdir_p path
-        repo = Git.clone url, path, opts
-        begin
-          ensure_pristine repo
-          lesson = Lesson.new repo
-          lesson.branch DIRTY_BRANCH
-          lesson.prune!
-          lesson
-        rescue => e
+        path = File.join SOURCE_PATH, subpath
+        repo = Git.clone url, path, DEFAULTS.merge(opts)
+        begin Lesson.new repo
+        rescue => e # clean up in case of errors
           FileUtils.remove_entry_secure repo.working_dir
           raise e
         end
       end
 
-      # Ensures that
-      # - the repository does not have a @@genie@@ branch, and
-      # - the directory contains +index.md+
-      # @param [Grit::Repo] repo              git repository
-      # @raise [InvalidLessonError] if any of the assertions fail
-      def ensure_pristine(repo)
-        raise DirtyBranchError.new if repo.branches.any? { |b| b.name == DIRTY_BRANCH }
-        raise MissingIndexError.new unless File.exist? File.join(repo.working_dir, INDEX_FILE)
+      private
+
+      # Ensures that the source and compiled directories exist.
+      # @return [Void]
+      def prepare_directories
+        FileUtils.mkdir_p SOURCE_PATH
+        FileUtils.mkdir_p COMPILED_PATH
       end
 
     end
 
+    prepare_directories
+    attr_reader :repo
+
     # Creates a new lesson from the given repo.
     # @param [Grit::Repo] repo          git repository
     # @raise [InvalidLessonError] if the repository doesn't contain a valid
-    #   +manifest.json+.
+    #   +manifest.json+ and a valid +index.md+.
+    # @todo TODO actually parse manifest.json
+    # @todo TODO move {INDEX_FILE} to Aladdin
     def initialize(repo)
-      raise MissingManifestError.new unless File.exist? File.join(repo.working_dir, Aladdin::Config::FILE)
+      unless File.exist? File.expand_path(Aladdin::Config::FILE, repo.working_dir)
+        raise MissingManifestError.new repo.working_dir
+      end
+      unless File.exist? File.expand_path(INDEX_FILE, repo.working_dir)
+        raise MissingIndexError.new repo.working_dir
+      end
       @repo = repo
     end
 
-    # Creates a new branch from the current repository.
-    # @param [String] name          name of new branch
-    def branch(name)
-      @repo.git.native :checkout, {b: true}, name
+    # Removes the source and compiled directories of this lesson, if they
+    # exist.
+    def remove
+      # TODO
+      FileUtils.remove_entry_secure repo.working_dir
     end
-
-    # Prunes the current repository to save storage space.
-    def prune!
-      @repo.git.native :prune
-      @repo.git.native :gc, {aggressive: true}
-    end
+    alias :rm :remove
 
   end
 

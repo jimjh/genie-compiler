@@ -25,7 +25,13 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
 
+  # DEPENDENCIES
   gem.add_dependency 'grit', '~> 2.5.0'
   gem.add_dependency 'aladdin'
+
+  gem.add_development_dependency 'yard', '~> 0.8.3'
+  gem.add_development_dependency 'debugger-pry', '~> 0.1.1'
+  gem.add_development_dependency 'rspec', '~> 2.12.0'
+  gem.add_development_dependency 'rake', '~> 10.0.0'
 
 end

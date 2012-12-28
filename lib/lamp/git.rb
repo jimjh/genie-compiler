@@ -1,4 +1,5 @@
 # ~*~ encoding: utf-8 ~*~
+require 'grit'
 require 'lamp/git/errors'
 require 'lamp/git/commands'
 
