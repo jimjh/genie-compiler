@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
-
-# Specify your gem's dependencies in lamp.gemspec
 gemspec
+
+gem 'aladdin', git: "git@github.com:jimjh/aladdin.git", branch: 'master'

@@ -6,33 +6,12 @@ describe 'clone' do
 
   context 'given a fake repository' do
 
-    before(:all) { Lamp.settings.load! root: Dir.mktmpdir }
-    after(:all)  { FileUtils.remove_entry_secure Lamp.settings.root }
-
-    before(:each) do
-      @fake_repo = Dir.mktmpdir
-      Dir.chdir @fake_repo do
-        system <<-eos
-          (
-            git init
-            touch manifest.json && git add manifest.json
-            touch index.md && git add index.md
-            git ci -m 'first commit'
-          ) &> /dev/null
-        eos
-      end
-      @master = Grit::Repo.new(@fake_repo).head.commit.id
-    end
-
-    let(:url) { File.join(@fake_repo, '.git') }
-
-    after(:each) do
-      FileUtils.remove_entry_secure @fake_repo
-    end
+    include_context 'lesson repo'
+    let(:master) { Grit::Repo.new(@fake_repo).head.commit.id }
 
     it 'should default to the master branch' do
       lesson = Lamp::Lesson.clone_from url, 'test'
-      lesson.repo.head.commit.id.should eq @master
+      lesson.repo.head.commit.id.should eq master
       lesson.rm
     end
 
@@ -58,38 +37,29 @@ describe 'clone' do
     end
 
     it 'should raise a MissingIndexError if the index is missing.' do
-      FileUtils.rm File.join(@fake_repo, Lamp::Lesson::INDEX_FILE)
-      Dir.chdir @fake_repo do
-        system <<-eos
-          (git ci -am 'removed index') &> /dev/null
-        eos
-      end
+      (@fake_repo + Lamp::Lesson::INDEX_FILE).unlink
+      commit_all
       expect do
         Lamp::Lesson.clone_from url, 'test'
       end.to raise_error Lamp::Lesson::MissingIndexError
     end
 
     it 'should raise a MissingManifestError if the manifest is missing.' do
-      FileUtils.rm File.join(@fake_repo, Aladdin::Config::FILE)
-      Dir.chdir @fake_repo do
-        system <<-eos
-          (git ci -am 'removed manifest') &> /dev/null
-        eos
-      end
+      (@fake_repo + Aladdin::Config::FILE).unlink
+      commit_all
       expect do
         Lamp::Lesson.clone_from url, 'test'
       end.to raise_error Lamp::Lesson::MissingManifestError
     end
 
     it 'should overwrite any existing lessons.' do
-      dir = File.join(Lamp::Lesson.source_path, 'test')
-      rand = SecureRandom.uuid
-      FileUtils.mkdir_p dir
-      IO.write File.join(dir, 'x'), rand
+      dir = Lamp::Lesson.source_path + 'test'
+      dir.mkpath
+      IO.write dir + 'x', SecureRandom.uuid
       Lamp::Lesson.clone_from url, 'test'
-      File.directory?(dir).should be_true
-      File.exist?(File.join(dir, Aladdin::Config::FILE)).should be_true
-      File.exist?(File.join(dir, 'x')).should be_false
+      dir.should be_directory
+      (dir + Aladdin::Config::FILE).should be_file
+      (dir + 'x').should_not be_file
     end
 
   end

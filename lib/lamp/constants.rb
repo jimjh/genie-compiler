@@ -8,6 +8,6 @@ module Lamp
   }
 
   # Default path to the configuration file.
-  CONFIG_FILE = '/usr/local/etc/genie/worker'
+  CONFIG_FILE = '/usr/local/etc/genie/worker.yml'
 
 end
