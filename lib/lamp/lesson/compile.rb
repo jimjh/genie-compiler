@@ -11,18 +11,14 @@ module Lamp
     # File extension for render output.
     EXT       = '.inc'
 
-    class << self
-
-      # Generates compressed HTML files from the specified lesson.
-      # @param [String] name           lesson path, aka name
-      # @return [String] path to compiled lesson
-      def compile(name)
-        # TODO: lock
-        path = source_path name
-        lesson = new Grit::Repo.new(path), name
-        lesson.compile
-      end
-
+    # Generates compressed HTML files from the specified lesson.
+    # @param [String] name           lesson path, aka name
+    # @return [String] path to compiled lesson
+    def self.compile(name)
+      # TODO: lock
+      path = source_path name
+      lesson = new Grit::Repo.new(path), name
+      lesson.compile
     end
 
     # Compiles the lesson into HTML files, then copies these, the manifest, and
