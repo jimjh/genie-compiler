@@ -20,6 +20,12 @@ module Lamp
       Lesson::compile subpath
     end
 
+    desc 'rm LESSON_PATH', 'Removes lesson source and compiled files.'
+    # +lamp rm+
+    def rm(subpath)
+      Lesson::remove subpath
+    end
+
   end
 
 end

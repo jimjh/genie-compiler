@@ -5,6 +5,17 @@ module Lamp
 
     # Removes the source and compiled directories of this lesson, if they
     # exist.
+    # @param [String] name          lesson path, aka name
+    # @return [Void]
+    def self.remove(name)
+      # TODO: lock
+      path = source_path name
+      lesson = new Grit::Repo.new(path), name
+      lesson.rm
+    end
+
+    # Removes the source and compiled directories of this lesson, if they
+    # exist.
     def remove
       FileUtils.remove_entry_secure source_path
       Lamp.logger.info { 'Removed directory at %s' % source_path }
