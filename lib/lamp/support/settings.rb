@@ -1,4 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
+require 'yaml'
+require 'active_support/core_ext/hash'
 
 module Lamp
 
@@ -26,15 +28,15 @@ module Lamp
       def load!(*args)
         case (first = args.shift)
         when nil then raise ArgumentError.new "wrong number of arguments"
-        when String then load_file! first, args
-        when Hash then load_hash! first, args
+        when String then load_file! first, *args
+        when Hash then load_hash! first, *args
         end
       end
 
       private
 
       def load_file!(filename, options = {})
-        newsets = YAML::load_file(filename).deep_symbolize
+        newsets = YAML::load_file(filename).symbolize_keys
         if options[:env] && newsets[options[:env].to_sym]
           newsets = newsets[options[:env].to_sym]
         end

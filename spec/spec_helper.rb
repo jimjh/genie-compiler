@@ -42,3 +42,5 @@ end
 
 require 'lamp'
 Lamp.logger.level = Logger::FATAL
+
+require 'shared/repo_context'
