@@ -1,5 +1,4 @@
 # ~*~ encoding: utf-8 ~*~
-require 'lamp/version'
 require 'lamp/constants'
 require 'active_support/core_ext/hash'
 
