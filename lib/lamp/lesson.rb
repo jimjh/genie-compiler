@@ -6,6 +6,7 @@ require 'aladdin/config'
 require 'lamp/lesson/errors'
 require 'lamp/lesson/clone'
 require 'lamp/lesson/compile'
+require 'lamp/lesson/remove'
 require 'lamp/git'
 
 module Lamp
@@ -19,9 +20,7 @@ module Lamp
     INDEX_FILE  = 'index.md'
 
     # Default options for public interface.
-    DEFAULTS    = {
-      branch:       'master',
-    }
+    DEFAULTS    = { branch: 'master' }
 
     class << self
 
@@ -69,15 +68,6 @@ module Lamp
       @manifest = Aladdin::Config.new @repo.working_dir
       @markdown = Redcarpet::Markdown.new(Aladdin::Render::HTML, Aladdin::MARKDOWN_EXTENSIONS)
     end
-
-    # Removes the source and compiled directories of this lesson, if they
-    # exist.
-    def remove
-      # TODO
-      FileUtils.remove_entry_secure repo.working_dir
-      Lamp.logger.info { 'Removed directory at %s' % repo.working_dir }
-    end
-    alias :rm :remove
 
     private
 
