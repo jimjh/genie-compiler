@@ -20,6 +20,12 @@ module Lamp
       Lesson::compile subpath
     end
 
+    desc 'create GIT_URL LESSON_PATH', 'Creates a lesson from the git repository at the given URL.'
+    option :branch, type: :string, default: Lesson::DEFAULTS[:branch]
+    def create(url, subpath)
+      Lesson::create url, subpath, branch: options[:branch]
+    end
+
     desc 'rm LESSON_PATH', 'Removes lesson source and compiled files.'
     # +lamp rm+
     def rm(subpath)

@@ -17,12 +17,16 @@ module Lamp
     # Removes the source and compiled directories of this lesson, if they
     # exist.
     def remove
-      FileUtils.remove_entry_secure source_path
-      Lamp.logger.info { 'Removed directory at %s' % source_path }
-      FileUtils.remove_entry_secure compiled_path if compiled_path.exist?
-      Lamp.logger.info { 'Removed directory at %s' % compiled_path }
+      [source_path, compiled_path].each { |p| unlink p }
     end
     alias :rm :remove
+
+    private
+
+    def unlink(path)
+      FileUtils.remove_entry_secure path if path.exist?
+      Lamp.logger.info { 'Removed directory at %s' % path }
+    end
 
   end
 

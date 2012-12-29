@@ -6,6 +6,7 @@ require 'aladdin/config'
 require 'lamp/lesson/errors'
 require 'lamp/lesson/clone'
 require 'lamp/lesson/compile'
+require 'lamp/lesson/create'
 require 'lamp/lesson/remove'
 require 'lamp/git'
 
