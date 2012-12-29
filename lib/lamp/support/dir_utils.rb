@@ -24,9 +24,10 @@ module Lamp
       # @param [Pathname] destination   destination directory
       # @param [Array]    files         array of file names
       def copy_secure(source, destination, files)
+        basepath = source.to_s + File::SEPARATOR
         files.each do |file|
-          path = (source + file).cleanpath.to_s
-          if path.starts_with?(source.to_s + File::SEPARATOR)
+          path = (source + file).cleanpath
+          if path.to_s.starts_with?(basepath) and path.exist?
             FileUtils.cp_r path, destination
           else Lamp.logger.warn { 'Ignoring suspicious path %s' % path }
           end
