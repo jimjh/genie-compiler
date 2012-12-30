@@ -15,10 +15,12 @@ module Lamp
     # @param [String] name           lesson path, aka name
     # @return [String] path to compiled lesson
     def self.compile(name)
-      # TODO: lock
       path = source_path name
+      lock = obtain_lock name
       lesson = new Grit::Repo.new(path), name
       lesson.compile
+    ensure
+      release_lock lock
     end
 
     # Compiles the lesson into HTML files, then copies these, the manifest, and

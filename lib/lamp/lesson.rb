@@ -4,6 +4,7 @@ require 'pathname'
 require 'aladdin/config'
 
 require 'lamp/lesson/errors'
+require 'lamp/lesson/locks'
 require 'lamp/lesson/clone'
 require 'lamp/lesson/compile'
 require 'lamp/lesson/create'
@@ -43,6 +44,12 @@ module Lamp
         Pathname.new(Lamp.settings.root) + 'solution' + name
       end
 
+      # Path to lesson locks.
+      # @return [Pathname] path
+      def lock_path(name='.')
+        Pathname.new(Lamp.settings.root) + 'lock' + name
+      end
+
       private
 
       # Dynamically defines getter methods for +source_path+, +compiled_path+
@@ -59,7 +66,7 @@ module Lamp
       # Ensures that the source and compiled directories exist.
       # @return [Void]
       def prepare_directories
-        [source_path, compiled_path, solution_path].map(&:mkpath)
+        [source_path, compiled_path, solution_path, lock_path].map(&:mkpath)
       end
 
     end

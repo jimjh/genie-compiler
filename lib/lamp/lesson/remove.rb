@@ -8,10 +8,12 @@ module Lamp
     # @param [String] name          lesson path, aka name
     # @return [Void]
     def self.remove(name)
-      # TODO: lock
       path = source_path name
+      lock = obtain_lock name
       lesson = new Grit::Repo.new(path), name
       lesson.rm
+    ensure
+      release_lock lock
     end
 
     # Removes the source and compiled directories of this lesson, if they

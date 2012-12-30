@@ -9,11 +9,13 @@ module Lamp
     # @param        [String] name       lesson path aka name
     # @return       [Lesson] lesson
     def self.create(url, name, opts={})
-      # TODO: lock
-      lesson = clone_from url, name, opts
+      lock   = obtain_lock name
+      lesson = clone_from! url, name, opts
       lesson.compile
-      FileUtils.remove_entry_secure source_path name
+      source_path(name).rmtree
       lesson
+    ensure
+      release_lock lock
     end
 
   end
