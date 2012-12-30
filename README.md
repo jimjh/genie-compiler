@@ -3,9 +3,13 @@ The worker is called upon to compile lessons from their source files into a
 web-publishable format.
 
 ## Configuration
+The worker expects a configuration file at `/usr/local/etc/genie/worker.yml`.
+Refer to `lib/lamp/constants.rb` for defaults.
 <dl>
-  <dt>ROOT</dt>
-  <dd>default output directory, should probably be on a networked file system like EBS</dd>
+  <dt>root</dt>
+  <dd>Default output directory. Should probably be on a networked file system like EBS</dd>
+  <dt>log_output</dt>
+  <dd>Path to log file. Ruby's logger will automatically rotate the logs.</dd>
 </dl>
 
 ## Workflow
