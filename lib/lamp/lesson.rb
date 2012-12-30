@@ -45,6 +45,17 @@ module Lamp
 
       private
 
+      # Dynamically defines getter methods for +source_path+, +compiled_path+
+      # etc.
+      # @param  [Array] names               array of path names
+      # @return [Void]
+      def path_reader(*names)
+        names.each do |name|
+          m = (name.to_s + '_path').to_sym
+          define_method(m) { Lesson.public_send m, self.name }
+        end
+      end
+
       # Ensures that the source and compiled directories exist.
       # @return [Void]
       def prepare_directories
@@ -75,15 +86,7 @@ module Lamp
     end
 
     private
-
-    # @return [Pathname] source path
-    def source_path; Lesson.source_path name end
-
-    # @return [Pathname] compiled path
-    def compiled_path; Lesson.compiled_path name end
-
-    # @return [Pathname] solution path
-    def solution_path; Lesson.solution_path name end
+    path_reader :source, :compiled, :solution
 
   end
 
