@@ -4,6 +4,8 @@ require 'securerandom'
 
 describe 'DirUtils' do
 
+  DirUtils = Lamp::Support::DirUtils
+
   context 'secure copy' do
 
     before(:each) do
@@ -22,7 +24,7 @@ describe 'DirUtils' do
       IO.write @dir + 'y' + 'z', rand_text
 
       destination = Pathname.new Dir.mktmpdir
-      Lamp::Support::DirUtils.copy_secure @dir, destination,
+      DirUtils.copy_secure @dir, destination,
         ['x', 'y', 'y/z']
 
       (destination+'x').should be_file
@@ -41,7 +43,7 @@ describe 'DirUtils' do
       IO.write  @dir + 'x', rand_text
 
       destination = Pathname.new Dir.mktmpdir
-      Lamp::Support::DirUtils.copy_secure @dir, destination,
+      DirUtils.copy_secure @dir, destination,
         %w(x .. / . ./.. /.. ../..// // /// .///)
 
       (destination+'x').should be_file
@@ -52,6 +54,25 @@ describe 'DirUtils' do
 
       destination.rmtree
 
+    end
+
+  end
+
+  context 'descends_from?' do
+
+    it 'should reject the actual directory' do
+      base = Pathname.new '/a/b/c'
+      DirUtils.descends_from?(base, base + '.').should be_false
+    end
+
+    it 'should reject double dots' do
+      base = Pathname.new '/a/b/c'
+      DirUtils.descends_from?(base, base + '..').should be_false
+    end
+
+    it 'should accept descendants' do
+      base = Pathname.new '/a/b/c'
+      DirUtils.descends_from?(base, base + 'd').should be_true
     end
 
   end

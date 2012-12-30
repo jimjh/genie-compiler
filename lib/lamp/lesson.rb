@@ -69,6 +69,16 @@ module Lamp
         [source_path, compiled_path, solution_path, lock_path].map(&:mkpath)
       end
 
+      # Ensures that the given name is safe for use in a path.
+      # @param [String] name
+      # @raise [NameError] if the given name is not safe
+      def ensure_safe_name(name)
+        lesson_path = source_path name
+        unless Support::DirUtils.descends_from? source_path, lesson_path
+          raise NameError.new '%s is not a safe name.' % name
+        end
+      end
+
     end
 
     prepare_directories

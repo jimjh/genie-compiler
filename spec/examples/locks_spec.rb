@@ -4,6 +4,8 @@ require 'timeout'
 
 describe 'locks' do
 
+  TIMEOUT = 0.5
+
   context 'given a fake repo' do
 
     include_context 'lesson repo'
@@ -11,22 +13,22 @@ describe 'locks' do
     it 'should not be able to clone without lock' do
       lock = Lamp::Lesson.send :obtain_lock, 'test'
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.clone_from url, 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.clone_from url, 'test' }
       end.to raise_error Timeout::Error
       Lamp::Lesson.send :release_lock, lock
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.clone_from url, 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.clone_from url, 'test' }
       end.to_not raise_error
     end
 
     it 'should not be able to create without lock' do
       lock = Lamp::Lesson.send :obtain_lock, 'test'
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.create url, 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.create url, 'test' }
       end.to raise_error Timeout::Error
       Lamp::Lesson.send :release_lock, lock
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.create url, 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.create url, 'test' }
       end.to_not raise_error
     end
 
@@ -34,11 +36,11 @@ describe 'locks' do
       Lamp::Lesson.clone_from url, 'test'
       lock = Lamp::Lesson.send :obtain_lock, 'test'
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.remove 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.remove 'test' }
       end.to raise_error Timeout::Error
       Lamp::Lesson.send :release_lock, lock
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.remove 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.remove 'test' }
       end.to_not raise_error
     end
 
@@ -46,11 +48,11 @@ describe 'locks' do
       Lamp::Lesson.clone_from url, 'test'
       lock = Lamp::Lesson.send :obtain_lock, 'test'
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.compile 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.compile 'test' }
       end.to raise_error Timeout::Error
       Lamp::Lesson.send :release_lock, lock
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.compile 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.compile 'test' }
       end.to_not raise_error
     end
 
@@ -58,7 +60,7 @@ describe 'locks' do
       Lamp::Lesson.clone_from url, 'test'
       lock = Lamp::Lesson.send :obtain_lock, 'x'
       expect do
-        Timeout::timeout(1) { Lamp::Lesson.compile 'test' }
+        Timeout::timeout(TIMEOUT) { Lamp::Lesson.compile 'test' }
       end.to_not raise_error
       Lamp::Lesson.send :release_lock, lock
     end

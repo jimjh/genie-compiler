@@ -6,8 +6,10 @@ module Lamp
     # Removes the source and compiled directories of this lesson, if they
     # exist.
     # @param [String] name          lesson path, aka name
+    # @raise [NameError]                if the given name is invalid.
     # @return [Void]
     def self.remove(name)
+      ensure_safe_name name
       path = source_path name
       lock = obtain_lock name
       lesson = new Grit::Repo.new(path), name

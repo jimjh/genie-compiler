@@ -19,6 +19,9 @@ module Lamp
     # Raised if the worker is unable to obtain a lock on the lesson.
     class LockError < StandardError; end
 
+    # Raised if the given lesson name is invalid.
+    class NameError < StandardError; end
+
   end
 
 end
