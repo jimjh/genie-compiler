@@ -27,9 +27,10 @@ module Lamp
     # @return [Pathname] path to compiled lesson
     def compile
       Support::DirUtils.ensure_empty compiled_path
+      Support::DirUtils.ensure_empty solution_path
       sources = [Aladdin::Config::FILE] + @manifest[:static_paths]
       Support::DirUtils.copy_secure source_path, compiled_path, sources
-      Pathname.glob(source_path + GLOB).each { |path| render path, compiled_path }
+      Pathname.glob(source_path+GLOB).each { |path| render path, compiled_path }
       compiled_path
     end
 
@@ -41,7 +42,9 @@ module Lamp
     # @param [Pathname] destination       path to output directory
     # @return [Fixnum] number of bytes written
     def render(source, destination)
-      html = @markdown.render File.read source.to_s
+      rndr = Aladdin::Render::HTML.new name: name
+      mkdn = Redcarpet::Markdown.new(rndr, Aladdin::MARKDOWN_EXTENSIONS)
+      html = mkdn.render File.read source.to_s
       IO.write(destination + source.basename.sub_ext(EXT), html)
     end
 

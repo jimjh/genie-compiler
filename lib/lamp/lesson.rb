@@ -37,6 +37,12 @@ module Lamp
         Pathname.new(Lamp.settings.root) + 'compiled' + name
       end
 
+      # Path to lesson solutions.
+      # @return [Pathname] path
+      def solution_path(name='.')
+        Pathname.new(Lamp.settings.root) + 'solution' + name
+      end
+
       private
 
       # Ensures that the source and compiled directories exist.
@@ -44,6 +50,7 @@ module Lamp
       def prepare_directories
         FileUtils.mkdir_p source_path
         FileUtils.mkdir_p compiled_path
+        FileUtils.mkdir_p solution_path
       end
 
     end
@@ -67,20 +74,18 @@ module Lamp
         raise MissingIndexError.new repo.working_dir
       end
       @manifest = Aladdin::Config.new @repo.working_dir
-      @markdown = Redcarpet::Markdown.new(Aladdin::Render::HTML, Aladdin::MARKDOWN_EXTENSIONS)
     end
 
     private
 
     # @return [Pathname] source path
-    def source_path
-      Lesson.source_path name
-    end
+    def source_path; Lesson.source_path name end
 
     # @return [Pathname] compiled path
-    def compiled_path
-      Lesson.compiled_path name
-    end
+    def compiled_path; Lesson.compiled_path name end
+
+    # @return [Pathname] solution path
+    def solution_path; Lesson.solution_path name end
 
   end
 
