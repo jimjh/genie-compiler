@@ -16,6 +16,9 @@ module Lamp
     # Raised if the repository doesn't contain manifest.json
     class MissingManifestError < InvalidLessonError; end
 
+    # Raised if the worker is unable to obtain a lock on the lesson.
+    class LockError < StandardError; end
+
   end
 
 end
