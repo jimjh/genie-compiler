@@ -48,9 +48,7 @@ module Lamp
       # Ensures that the source and compiled directories exist.
       # @return [Void]
       def prepare_directories
-        FileUtils.mkdir_p source_path
-        FileUtils.mkdir_p compiled_path
-        FileUtils.mkdir_p solution_path
+        [source_path, compiled_path, solution_path].map(&:mkpath)
       end
 
     end
