@@ -74,7 +74,7 @@ module Lamp
       # @raise [NameError] if the given name is not safe
       def ensure_safe_name(name)
         lesson_path = source_path name
-        unless DirUtils.descends_from? Lamp.settings.root, lesson_path
+        unless Support::DirUtils.descends_from? source_path, lesson_path
           raise NameError.new '%s is not a safe name.' % name
         end
       end
