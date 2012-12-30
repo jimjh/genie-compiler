@@ -12,8 +12,10 @@ module Lamp
       # @option opts [String] branch      branch name, defaults to master
       # @raise [GitCloneError]            if the clone operation failed.
       # @raise [InvalidLessonError]       if the given lesson is invalid.
+      # @raise [NameError]                if the given name is invalid.
       # @return [Lesson]                  lesson
       def clone_from(url, name, opts={})
+        ensure_safe_name name
         lock = obtain_lock name
         clone_from! url, name, opts
       ensure
