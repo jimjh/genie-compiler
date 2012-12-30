@@ -17,7 +17,7 @@ module Lamp
         lock = obtain_lock name
         clone_from! url, name, opts
       ensure
-        release_lock lock
+        release_lock lock unless lock.nil?
       end
 
       private

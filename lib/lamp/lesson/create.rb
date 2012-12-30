@@ -15,7 +15,7 @@ module Lamp
       source_path(name).rmtree
       lesson
     ensure
-      release_lock lock
+      release_lock lock unless lock.nil?
     end
 
   end

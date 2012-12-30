@@ -13,7 +13,7 @@ module Lamp
       lesson = new Grit::Repo.new(path), name
       lesson.rm
     ensure
-      release_lock lock
+      release_lock lock unless lock.nil?
     end
 
     # Removes the source and compiled directories of this lesson, if they

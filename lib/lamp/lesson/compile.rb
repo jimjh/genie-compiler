@@ -20,7 +20,7 @@ module Lamp
       lesson = new Grit::Repo.new(path), name
       lesson.compile
     ensure
-      release_lock lock
+      release_lock lock unless lock.nil?
     end
 
     # Compiles the lesson into HTML files, then copies these, the manifest, and
