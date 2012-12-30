@@ -13,8 +13,10 @@ module Lamp
 
     # Generates compressed HTML files from the specified lesson.
     # @param [String] name           lesson path, aka name
+    # @raise [NameError]                if the given name is invalid.
     # @return [String] path to compiled lesson
     def self.compile(name)
+      ensure_safe_name name
       path = source_path name
       lock = obtain_lock name
       lesson = new Grit::Repo.new(path), name
