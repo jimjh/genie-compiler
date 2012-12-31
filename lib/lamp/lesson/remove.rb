@@ -21,7 +21,7 @@ module Lamp
     # Removes the source and compiled directories of this lesson, if they
     # exist.
     def remove
-      [source_path, compiled_path].each { |p| unlink p }
+      [source_path, compiled_path, solution_path].each { |p| unlink p }
     end
     alias :rm :remove
 
