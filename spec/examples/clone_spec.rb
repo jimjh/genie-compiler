@@ -1,12 +1,12 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper'
-require 'securerandom'
 
-describe 'clone' do
+describe 'Lamp::Lesson::clone_from' do
 
   context 'given a fake repository' do
 
     include_context 'lesson repo'
+    include_context 'file ops'
     let(:master) { Grit::Repo.new(@fake_repo).head.commit.id }
 
     it 'should default to the master branch' do
@@ -16,14 +16,10 @@ describe 'clone' do
     end
 
     it 'should use the specified branch' do
-      Dir.chdir @fake_repo do
-        system <<-eos
-          (
-            git co -b x
-            git ci --allow-empty -am 'branch'
-          ) &> /dev/null
-        eos
-      end
+      silence @fake_repo, <<-eos
+        git co -b x
+        git ci --allow-empty -am 'branch'
+      eos
       commit = Grit::Repo.new(@fake_repo).head.commit.id
       lesson = Lamp::Lesson.clone_from url, 'test', branch: 'x'
       lesson.repo.head.commit.id.should eq commit
@@ -53,9 +49,8 @@ describe 'clone' do
     end
 
     it 'should overwrite any existing lessons.' do
-      dir = Lamp::Lesson.source_path + 'test'
-      dir.mkpath
-      IO.write dir + 'x', SecureRandom.uuid
+      dir = empty_directory Lamp::Lesson.source_path + 'test'
+      random_file dir + 'x'
       Lamp::Lesson.clone_from url, 'test'
       dir.should be_directory
       (dir + Aladdin::Config::FILE).should be_file
@@ -65,4 +60,3 @@ describe 'clone' do
   end
 
 end
-

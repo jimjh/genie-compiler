@@ -1,6 +1,5 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper'
-require 'securerandom'
 
 describe 'DirUtils' do
 
@@ -8,30 +7,25 @@ describe 'DirUtils' do
 
   context 'secure copy' do
 
-    before(:each) do
-      @dir = Pathname.new Dir.mktmpdir
-    end
+    include_context 'file ops'
 
-    after(:each) do
-      FileUtils.remove_entry_secure @dir
-    end
+    before(:each) { @dir = Pathname.new Dir.mktmpdir    }
+    after(:each)  { FileUtils.remove_entry_secure @dir  }
 
     it 'should copy files from source to destination' do
 
-      rand_text = SecureRandom.uuid
-      IO.write  @dir + 'x', rand_text
-      (@dir + 'y').mkdir
-      IO.write @dir + 'y' + 'z', rand_text
+      randx = random_file @dir + 'x'
+      diry  = empty_directory @dir + 'y'
+      randz = random_file diry + 'z'
 
       destination = Pathname.new Dir.mktmpdir
-      DirUtils.copy_secure @dir, destination,
-        ['x', 'y', 'y/z']
+      DirUtils.copy_secure @dir, destination, %w(x y y/z)
 
       (destination+'x').should be_file
-      IO.read(destination+'x').should eq rand_text
+      IO.read(destination+'x').should eq randx
 
       (destination+'y').should be_directory
-      IO.read(destination+'y'+'z').should eq rand_text
+      IO.read(destination+'y'+'z').should eq randz
 
       destination.rmtree
 
@@ -39,15 +33,14 @@ describe 'DirUtils' do
 
     it 'should ignore suspicious files' do
 
-      rand_text = SecureRandom.uuid
-      IO.write  @dir + 'x', rand_text
+      randx = random_file @dir + 'x'
 
       destination = Pathname.new Dir.mktmpdir
       DirUtils.copy_secure @dir, destination,
         %w(x .. / . ./.. /.. ../..// // /// .///)
 
       (destination+'x').should be_file
-      IO.read(destination+'x').should eq rand_text
+      IO.read(destination+'x').should eq randx
 
       files = destination.entries.reject { |path| %w(. ..).include? path.to_s }
       files.size.should be(1)

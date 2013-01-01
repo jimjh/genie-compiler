@@ -1,7 +1,7 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper.rb'
 
-describe 'create' do
+describe 'Lamp::Lesson::create' do
 
   context 'given a fake repository' do
 

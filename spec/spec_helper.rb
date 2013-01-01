@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'tmpdir'
+require 'rspec'
 
 begin Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -11,13 +12,10 @@ rescue Bundler::BundlerError => e
 end
 
 module Test
-  ROOT = File.dirname __FILE__
+  ROOT = Pathname.new File.dirname(__FILE__)
 end
 
-$:.unshift File.join(Test::ROOT, '..', 'lib')
-$:.unshift Test::ROOT
-
-require 'rspec'
+$:.unshift Test::ROOT + '..' + 'lib'
 
 # Redirects stderr and stdout to /dev/null.
 def silence_output
@@ -35,12 +33,15 @@ def enable_output
   @orig_stdout = nil
 end
 
-RSpec.configure do |config|
-  config.before(:all) { silence_output }
-  config.after(:all) { enable_output }
-end
-
 require 'lamp'
+require 'shared/repo_context'
+require 'shared/file_context'
+require 'shared/timeout_matcher.rb'
+
 Lamp.logger.level = Logger::FATAL
 
-require 'shared/repo_context'
+RSpec.configure do |config|
+  config.include Test::Matchers
+  config.before(:all) { silence_output }
+  config.after(:all)  { enable_output  }
+end
