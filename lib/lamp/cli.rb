@@ -21,6 +21,7 @@ module Lamp
     end
 
     desc 'create GIT_URL LESSON_PATH', 'Creates a lesson from the git repository at the given URL.'
+    # +lamp create+
     option :branch, type: :string, default: Lesson::DEFAULTS[:branch]
     def create(url, subpath)
       Lesson::create url, subpath, branch: options[:branch]
