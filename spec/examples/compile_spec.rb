@@ -21,11 +21,25 @@ describe 'Lamp::Lesson::compile' do
     end
 
     it 'should copy static assets to target directory' do
-      empty_directory @fake_repo + 'images'
-      rand = random_file @fake_repo + 'images' + 'x'
+      empty_directory @fake_repo + 'img'
+      rand = random_file @fake_repo + 'img' + 'x'
+      IO.write @fake_repo + Aladdin::Config::FILE, '{"static_paths": ["img"]}'
       commit_all
       compile
-      IO.read(Lamp::Lesson.compiled_path('test') + 'images' + 'x').should eql rand
+      IO.read(Lamp::Lesson.compiled_path('test') + 'img' + 'x').should eql rand
+    end
+
+    it 'should not copy anything else' do
+      random_file @fake_repo + 'x'
+      random_file @fake_repo + 'y'
+      empty_directory @fake_repo + 'z'
+      random_file @fake_repo + 'z' + 'w'
+      commit_all
+      compile
+      (Lamp::Lesson.compiled_path('test') + 'x').should_not be_exist
+      (Lamp::Lesson.compiled_path('test') + 'y').should_not be_exist
+      (Lamp::Lesson.compiled_path('test') + 'z').should_not be_exist
+      (Lamp::Lesson.compiled_path('test') + 'z' + 'w').should_not be_exist
     end
 
     it 'should render all markdown sources into html' do
