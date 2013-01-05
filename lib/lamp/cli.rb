@@ -33,6 +33,12 @@ module Lamp
       Lesson::remove subpath
     end
 
+    # Configures Lamp with the default options.
+    def self.start(argv)
+      Lamp.configure!
+      super
+    end
+
   end
 
 end
