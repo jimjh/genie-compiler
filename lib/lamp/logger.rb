@@ -6,7 +6,7 @@ module Lamp
   # @see https://github.com/chriseppstein/compass/blob/stable/lib/compass/logger.rb
   class Logger < ::Logger
 
-    COLORS = { clear: 0, red: 31, green: 32, yellow: 33, grey: 37 }
+    COLORS = { clear: 0, red: 31, green: 32, blue: 35, yellow: 33, grey: 37 }
 
     ACTION_COLORS = {
       :error     => :red,
@@ -22,6 +22,8 @@ module Lamp
       :identical => :green,
       :convert   => :green,
       :clone     => :green,
+      :lock      => :blue,
+      :release   => :blue
     }
 
     # Record that an action has occurred.

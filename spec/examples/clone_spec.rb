@@ -6,7 +6,7 @@ describe 'Lamp::Lesson::clone_from' do
   context 'given a fake repository' do
 
     include_context 'lesson repo'
-    include_context 'file ops'
+
     let(:master) { Grit::Repo.new(@fake_repo).head.commit.id }
 
     it 'should default to the master branch' do
@@ -37,7 +37,7 @@ describe 'Lamp::Lesson::clone_from' do
       commit_all
       expect do
         Lamp::Lesson.clone_from url, 'test'
-      end.to raise_error Lamp::Actions::FileActions::FileError
+      end.to raise_error Lamp::Actions::FileError
     end
 
     it 'should raise a MissingManifestError if the manifest is missing.' do
@@ -45,7 +45,7 @@ describe 'Lamp::Lesson::clone_from' do
       commit_all
       expect do
         Lamp::Lesson.clone_from url, 'test'
-      end.to raise_error Lamp::Actions::FileActions::FileError
+      end.to raise_error Lamp::Actions::FileError
     end
 
     it 'should overwrite any existing lessons.' do
