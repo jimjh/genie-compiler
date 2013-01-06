@@ -35,13 +35,15 @@ end
 
 require 'lamp'
 require 'shared/repo_context'
-require 'shared/file_context'
+require 'shared/file_helpers'
 require 'shared/timeout_matcher.rb'
-
-Lamp.logger.level = Logger::FATAL
 
 RSpec.configure do |config|
   config.include Test::Matchers
+  config.include Test::FileHelpers
   config.before(:all) { silence_output }
   config.after(:all)  { enable_output  }
 end
+
+Lamp.configure!
+Lamp.logger.level = Logger::FATAL

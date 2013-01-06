@@ -5,6 +5,7 @@ module Lamp
 
   module Git
     extend self
+    extend Actions
 
     # Default set of flags to pass to +git clone+.
     CLONE_FLAGS = %w(--quiet --depth=100)
@@ -15,8 +16,9 @@ module Lamp
     # @param        [Pathaname] path        path of target directory
     # @option opts  [String]    branch      branch name
     # @return [Grit::Repo] repository
+    # @raise  [GitCloneError] if the clone failed
     def clone_from(url, path, opts)
-      Support::DirUtils.ensure_empty path
+      directory path, force: true
       flags = CLONE_FLAGS + ['--branch=' + opts[:branch]]
       Open3.popen3 'git', 'clone', *flags,
         url, path.to_s do |i, o, e, t|

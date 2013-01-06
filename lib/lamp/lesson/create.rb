@@ -14,7 +14,7 @@ module Lamp
       lock   = obtain_lock name
       lesson = clone_from! url, name, opts
       lesson.compile
-      source_path(name).rmtree
+      remove source_path(name)
       lesson
     ensure
       release_lock lock unless lock.nil?

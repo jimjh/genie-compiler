@@ -4,7 +4,7 @@ require 'timeout'
 
 describe 'Lamp::Lesson::obtain_lock and Lamp::Lesson::release_lock' do
 
-  TIMEOUT = 0.5
+  TIMEOUT = 0.6
 
   context 'given a fake repo' do
 
@@ -27,9 +27,9 @@ describe 'Lamp::Lesson::obtain_lock and Lamp::Lesson::release_lock' do
     it 'should be able to remove without lock' do
       Lamp::Lesson.clone_from url, 'test'
       lock = Lamp::Lesson.send :obtain_lock, 'test'
-      expect { Lamp::Lesson.remove 'test' }.to timeout(TIMEOUT)
+      expect { Lamp::Lesson.rm 'test' }.to timeout(TIMEOUT)
       Lamp::Lesson.send :release_lock, lock
-      expect { Lamp::Lesson.remove 'test' }.to_not timeout(TIMEOUT)
+      expect { Lamp::Lesson.rm 'test' }.to_not timeout(TIMEOUT)
     end
 
     it 'should not be able to compile without lock' do
@@ -57,7 +57,7 @@ describe 'Lamp::Lesson::obtain_lock and Lamp::Lesson::release_lock' do
       lesson = Lamp::Lesson.clone_from url, 'test'
       dir    = lesson.repo.working_dir
       Pathname.new(dir).should be_exist
-      Lamp::Lesson.remove 'test'
+      Lamp::Lesson.rm 'test'
       Pathname.new(dir).should_not be_exist
     end
 

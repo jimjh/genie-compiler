@@ -18,7 +18,7 @@ describe 'ensure_safe_name' do
   end
 
   it 'should raise an error if remove is given an unsafe name' do
-    expect { Lamp::Lesson.remove '../jimjh/x' }.to raise_error E
+    expect { Lamp::Lesson.rm '../jimjh/x' }.to raise_error E
   end
 
 end

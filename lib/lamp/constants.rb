@@ -1,6 +1,9 @@
 # ~*~ encoding: utf-8 ~*~
 module Lamp
 
+  # Base class for all Lamp exceptions.
+  class Error < StandardError; end
+
   # Default configuration options.
   DEFAULTS = {
     root:           '/tmp/genie',
