@@ -17,8 +17,10 @@ module Lamp
   # files. Note that +name+ is assumed to be safe (w.r.t. directory traversal
   # attacks.)
   class Lesson
+    extend  Actions
+    include Actions
 
-    # Name of index file.
+    # Name of index file FIXME move to aladdin
     INDEX_FILE  = 'index.md'
 
     # Default options for public interface.
@@ -66,7 +68,7 @@ module Lamp
       # Ensures that the source and compiled directories exist.
       # @return [Void]
       def prepare_directories
-        [source_path, compiled_path, solution_path, lock_path].map(&:mkpath)
+        [source_path, compiled_path, solution_path, lock_path].each { |path| directory path }
       end
 
       # Ensures that the given name is safe for use in a path.
@@ -74,7 +76,7 @@ module Lamp
       # @raise [NameError] if the given name is not safe
       def ensure_safe_name(name)
         lesson_path = source_path name
-        unless Support::DirUtils.descends_from? source_path, lesson_path
+        unless descends_from? source_path, lesson_path
           raise NameError.new '%s is not a safe name.' % name
         end
       end
@@ -84,21 +86,15 @@ module Lamp
     prepare_directories
     attr_reader :repo, :name
 
-    # Creates a new lesson from the given repo.
+    # Creates a new lesson from the given repo and name.
     # @param [Grit::Repo] repo          git repository
-    # @param [String]     name          lesson name
+    # @param [String]     name          lesson name, used as subpath
     # @raise [InvalidLessonError] if the repository doesn't contain a valid
     #   +manifest.json+ and a valid +index.md+.
-    # @todo TODO actually parse manifest.json
-    # @todo TODO move {INDEX_FILE} to Aladdin
     def initialize(repo, name)
       @repo, @name = repo, name
-      unless File.exist? File.expand_path(Aladdin::Config::FILE, repo.working_dir)
-        raise MissingManifestError.new repo.working_dir
-      end
-      unless File.exist? File.expand_path(INDEX_FILE, repo.working_dir)
-        raise MissingIndexError.new repo.working_dir
-      end
+      check_file File.expand_path(Aladdin::Config::FILE, repo.working_dir)
+      check_file File.expand_path(INDEX_FILE, repo.working_dir)
       @manifest = Aladdin::Config.new @repo.working_dir
     end
 

@@ -25,11 +25,11 @@ describe 'remove' do
     end
 
     it 'should raise an error if the specified lesson does not exist' do
-      expect { Lamp::Lesson::remove 'x' }.to raise_error
+      expect { Lamp::Lesson::rm 'x' }.to raise_error
     end
 
     it 'should not raise an error if the specified lesson exists' do
-      expect { Lamp::Lesson::remove 'test' }.to_not raise_error
+      expect { Lamp::Lesson::rm 'test' }.to_not raise_error
     end
 
   end

@@ -6,7 +6,6 @@ describe 'Lamp::Lesson::compile' do
   context 'given a lesson source' do
 
     include_context 'lesson repo'
-    include_context 'file ops'
 
     def compile
       Lamp::Lesson.clone_from url, 'test'
