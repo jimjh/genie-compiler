@@ -37,7 +37,7 @@ describe 'Lamp::Lesson::clone_from' do
       commit_all
       expect do
         Lamp::Lesson.clone_from url, 'test'
-      end.to raise_error Lamp::Lesson::MissingIndexError
+      end.to raise_error Lamp::Actions::FileActions::FileError
     end
 
     it 'should raise a MissingManifestError if the manifest is missing.' do
@@ -45,7 +45,7 @@ describe 'Lamp::Lesson::clone_from' do
       commit_all
       expect do
         Lamp::Lesson.clone_from url, 'test'
-      end.to raise_error Lamp::Lesson::MissingManifestError
+      end.to raise_error Lamp::Actions::FileActions::FileError
     end
 
     it 'should overwrite any existing lessons.' do

@@ -8,7 +8,7 @@ module Lamp
     # @param [String] name          lesson path, aka name
     # @raise [NameError]                if the given name is invalid.
     # @return [Void]
-    def self.remove(name)
+    def self.rm(name)
       ensure_safe_name name
       path = source_path name
       lock = obtain_lock name
@@ -20,16 +20,8 @@ module Lamp
 
     # Removes the source and compiled directories of this lesson, if they
     # exist.
-    def remove
-      [source_path, compiled_path, solution_path].each { |p| unlink p }
-    end
-    alias :rm :remove
-
-    private
-
-    def unlink(path)
-      FileUtils.remove_entry_secure path if path.exist?
-      Lamp.logger.info { 'Removed directory at %s' % path }
+    def rm
+      [source_path, compiled_path, solution_path].each { |p| remove p }
     end
 
   end

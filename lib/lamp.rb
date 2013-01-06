@@ -2,31 +2,43 @@
 require 'active_support/core_ext/hash'
 
 require 'lamp/constants'
+require 'lamp/logger'
 require 'lamp/support'
+require 'lamp/actions'
 
-# Lamp a.k.a Genie Worker is responsible for compiling lesson sources. When
-# the Lamp module is first loaded, it will read configuration options from
-# {CONFIG_FILE}.
+# Lamp a.k.a Genie Worker is responsible for compiling lesson sources. When the
+# Lamp module is first loaded, invoke {#configure!} to read configuration
+# options from {CONFIG_FILE}.
 module Lamp
-  extend Support::Logger
+  include Actions
   extend self
+
+  attr_reader     :logger
 
   # @return [Support::Settings] lamp's settings singleton
   def settings
     Support::Settings
   end
 
-  # Loads configuration options from +file+.
+  # Loads configuration options from +file+. This is not thread-safe, and
+  # should only be called at the beginning.
   # @param [String] file          path to configuration file
-  # @return [Void]
+  # @return [void]
   def configure!(file=CONFIG_FILE)
-    if File.exist? CONFIG_FILE then settings.load! CONFIG_FILE
-    else puts "Unable to find configuration file at #{CONFIG_FILE}"
-    end
+    check_file      file
+    settings.load! file
+    reset_logger
+  end
+
+  # Creates a new logger using the configuration options from {#settings}. This
+  # is not thread-safe, and should only be called at the beginning.
+  # @return [void]
+  def reset_logger
+    @logger = Logger.new settings.log_output
   end
 
   settings.defaults_to DEFAULTS
-  module_function :settings, :configure!
+  reset_logger
 
 end
 

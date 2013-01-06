@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe 'DirUtils' do
 
-  DirUtils = Lamp::Support::DirUtils
+  DirUtils = Lamp::Actions
 
   context 'secure copy' do
 

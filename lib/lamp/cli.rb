@@ -30,13 +30,17 @@ module Lamp
     desc 'rm LESSON_PATH', 'Removes lesson source and compiled files.'
     # +lamp rm+
     def rm(subpath)
-      Lesson::remove subpath
+      Lesson::rm subpath
     end
 
     # Configures Lamp with the default options.
     def self.start(argv)
       Lamp.configure!
       super
+    rescue Error => e
+      puts e.message
+      puts 'The operation failed.'
+      exit 1
     end
 
   end
