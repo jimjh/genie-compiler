@@ -23,8 +23,8 @@ shared_context 'lesson repo' do
     @fake_repo = Pathname.new Dir.mktmpdir
     silence @fake_repo, <<-eos
       git init
-      echo {} > manifest.json && git add manifest.json
-      touch index.md && git add index.md
+      echo {} > #{Aladdin::Config::FILE} && git add #{Aladdin::Config::FILE}
+      touch #{Aladdin::INDEX_MD} && git add #{Aladdin::INDEX_MD}
       git ci -m 'first commit'
     eos
   end

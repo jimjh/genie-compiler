@@ -20,9 +20,6 @@ module Lamp
     extend  Actions
     include Actions
 
-    # Name of index file FIXME move to aladdin
-    INDEX_FILE  = 'index.md'
-
     # Default options for public interface.
     DEFAULTS    = { branch: 'master' }
 
@@ -94,7 +91,7 @@ module Lamp
     def initialize(repo, name)
       @repo, @name = repo, name
       check_file File.expand_path(Aladdin::Config::FILE, repo.working_dir)
-      check_file File.expand_path(INDEX_FILE, repo.working_dir)
+      check_file File.expand_path(Aladdin::INDEX_MD, repo.working_dir)
       @manifest = Aladdin::Config.new @repo.working_dir
     end
 

@@ -33,7 +33,7 @@ describe 'Lamp::Lesson::clone_from' do
     end
 
     it 'should raise a MissingIndexError if the index is missing.' do
-      (@fake_repo + Lamp::Lesson::INDEX_FILE).unlink
+      (@fake_repo + Aladdin::INDEX_MD).unlink
       commit_all
       expect do
         Lamp::Lesson.clone_from url, 'test'
