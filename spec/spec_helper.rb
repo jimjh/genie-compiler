@@ -37,13 +37,14 @@ require 'lamp'
 require 'shared/repo_context'
 require 'shared/file_helpers'
 require 'shared/timeout_matcher.rb'
+require 'shared/mode_matcher.rb'
 
 RSpec.configure do |config|
   config.include Test::Matchers
   config.include Test::FileHelpers
   config.before(:all) { silence_output }
-  config.after(:all)  { enable_output  }
+  config.after(:all)  { enable_output;  FileUtils.remove_entry_secure $root  }
 end
 
-Lamp.configure!
+Lamp.configure! root: $root = Dir.mktmpdir
 Lamp.logger.level = Logger::FATAL

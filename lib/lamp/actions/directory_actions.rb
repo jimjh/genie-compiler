@@ -10,6 +10,7 @@ module Lamp
     # Creates a directory and all the directories necessary to reach it.
     # @param [String|Pathname] path         path of directory to create
     # @option opts [Boolean]   force        deletes existing directory, if any
+    # @option opts [Fixnum]    mode         directory permissions
     def directory(path, opts={})
       path = to_path path
       if path.directory?
@@ -18,7 +19,8 @@ module Lamp
       elsif path.exist? then not_directory path
       end
       Lamp.logger.record :directory, path.basename
-      path.mkpath
+      opts.delete :force
+      FileUtils.mkpath path, opts
     end
 
     # Removes the file/directory at +path+.
