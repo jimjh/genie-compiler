@@ -32,9 +32,18 @@ describe Lamp::Lesson do
 
       after(:each) { @lesson.nil? || @lesson.rm }
 
+      shared_examples 'clone directory permissions' do
+        it 'creates a private directory' do
+          dir = Pathname.new clone.repo.working_dir
+          dir.should have_mode(Lamp::PERMISSIONS[:private_dir])
+        end
+      end
+
       it 'defaults to the master branch' do
         clone.repo.head.commit.id.should eq master
       end
+
+      include_examples 'clone directory permissions'
 
       context 'with a specified branch' do
 
@@ -48,6 +57,8 @@ describe Lamp::Lesson do
         it 'uses the specified branch' do
           clone(branch: 'x').repo.head.commit.id.should eq commit
         end
+
+        include_examples 'clone directory permissions'
 
       end
 
@@ -82,9 +93,8 @@ describe Lamp::Lesson do
         let(:dir)     { empty_directory Lamp::Lesson.source_path + 'test' }
         before(:each) { random_file dir + 'x' }
 
-        it 'overwrites any existing lessons.' do
-          clone
-          dir.should be_directory
+        it 'overwrites any existing lessons' do
+          clone.repo.head.commit.id.should eq master
           (dir + Aladdin::Config::FILE).should be_file
           (dir + 'x').should_not be_file
         end

@@ -16,7 +16,8 @@ module Test
       end
 
       def failure_message_for_should
-        'expected file or directory to have permissions set to 0%o' % mode
+        'expected file or directory to have permissions set to 0%o, but was %o' %
+          [mode, @actual]
       end
 
       def failure_message_for_should_not
@@ -24,7 +25,8 @@ module Test
       end
 
       def matches?(file)
-        (octal File.stat(file).mode) =~ /#{octal mode}$/
+        @actual = File.stat(file).mode
+        (octal @actual) =~ /#{octal mode}$/
       end
 
       def octal(int)

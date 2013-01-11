@@ -18,7 +18,7 @@ module Lamp
     # @return [Grit::Repo] repository
     # @raise  [GitCloneError] if the clone failed
     def clone_from(url, path, opts)
-      directory path, force: true
+      directory path, force: true, mode: PERMISSIONS[:private_dir]
       flags = CLONE_FLAGS + ['--branch=' + opts[:branch]]
       Open3.popen3 'git', 'clone', *flags,
         url, path.to_s do |i, o, e, t|
