@@ -8,9 +8,9 @@ describe Lamp::Lesson do
     context 'given a lesson name' do
 
       include_context 'lesson repo'
-      NAME = 'test'
+      let(:name) { 'test' }
 
-      before(:each) { @lesson = Lamp::Lesson.clone_from url, NAME }
+      before(:each) { @lesson = Lamp::Lesson.clone_from url, name }
 
       context 'after compile' do
 
@@ -18,8 +18,8 @@ describe Lamp::Lesson do
 
         it 'removes the source and compiled directories' do
           expect { @lesson.rm }.to_not raise_error
-          Lamp::Lesson.source_path(NAME).should_not be_exist
-          Lamp::Lesson.compiled_path(NAME).should_not be_exist
+          Lamp::Lesson.source_path(name).should_not be_exist
+          Lamp::Lesson.compiled_path(name).should_not be_exist
         end
 
       end
@@ -28,8 +28,8 @@ describe Lamp::Lesson do
 
         it 'does not raise an error' do
           expect { @lesson.rm }.to_not raise_error
-          Lamp::Lesson.source_path(NAME).should_not be_exist
-          Lamp::Lesson.compiled_path(NAME).should_not be_exist
+          Lamp::Lesson.source_path(name).should_not be_exist
+          Lamp::Lesson.compiled_path(name).should_not be_exist
         end
 
       end
@@ -39,7 +39,7 @@ describe Lamp::Lesson do
       end
 
       it 'does not raise an error if the specified lesson exists' do
-        expect { Lamp::Lesson::rm NAME }.to_not raise_error
+        expect { Lamp::Lesson::rm name }.to_not raise_error
       end
 
       it 'raises an error if remove is given an unsafe name' do

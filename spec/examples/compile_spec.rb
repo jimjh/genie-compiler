@@ -8,13 +8,13 @@ describe Lamp::Lesson do
     context 'given a lesson source' do
 
       include_context 'lesson repo'
-      NAME = SecureRandom.uuid
+      let(:name) { SecureRandom.uuid }
 
-      before(:each) { Lamp::Lesson.clone_from url, NAME }
-      after(:each)  { Lamp::Lesson.rm NAME }
-      let(:src)     { Pathname.new Lamp::Lesson.source_path   NAME }
-      let(:dest)    { Pathname.new Lamp::Lesson.compiled_path NAME }
-      def compile; Lamp::Lesson.compile NAME; end
+      before(:each) { Lamp::Lesson.clone_from url, name }
+      after(:each)  { Lamp::Lesson.rm name }
+      let(:src)     { Pathname.new Lamp::Lesson.source_path   name }
+      let(:dest)    { Pathname.new Lamp::Lesson.compiled_path name }
+      def compile; Lamp::Lesson.compile name; end
 
       context 'and an existing output directory' do
 

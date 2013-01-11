@@ -16,9 +16,6 @@ shared_context 'lesson repo' do
 
   let(:url) { (@fake_repo + '.git').to_s }
 
-  before(:all) { Lamp.settings.load! root: Dir.mktmpdir }
-  after(:all)  { FileUtils.remove_entry_secure Lamp.settings.root }
-
   before(:each) do
     @fake_repo = Pathname.new Dir.mktmpdir
     silence @fake_repo, <<-eos

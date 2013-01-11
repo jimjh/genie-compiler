@@ -8,13 +8,12 @@ describe Lamp::Lesson do
     context 'given a fake repository' do
 
       include_context 'lesson repo'
-
-      NAME = 'test'
+      let(:name) { SecureRandom.uuid }
 
       it 'clones, compiles, and cleans' do
-        lesson = Lamp::Lesson.create url, NAME
-        Lamp::Lesson.source_path(NAME).should_not be_exist
-        Lamp::Lesson.compiled_path(NAME).should be_exist
+        lesson = Lamp::Lesson.create url, name
+        Lamp::Lesson.source_path(name).should_not be_exist
+        Lamp::Lesson.compiled_path(name).should be_exist
       end
 
     end
