@@ -8,6 +8,15 @@ describe Lamp::Actions do
     before(:each) { @dst = Pathname.new Dir.mktmpdir }
     after(:each)  { FileUtils.remove_entry_secure @dst }
 
+    shared_examples 'directory permissions' do
+      it 'creates a directory with the given permissions' do
+        opts ||= {}
+        Lamp::Actions.directory @dst + 'x', opts.merge(mode: 0600)
+        (@dst + 'x').should be_directory
+        sprintf("%o", File.stat(@dst + 'x').mode).should match(/0600$/)
+      end
+    end
+
     context 'when the directory exists' do
 
       before(:each) do
@@ -19,9 +28,17 @@ describe Lamp::Actions do
         IO.read(@dst + 'xyz').should eq @rand
       end
 
-      it 'creates an empty directory with :force' do
-        Lamp::Actions.directory @dst, force: true
-        (@dst + 'xyz').should_not exist
+      context 'with :force' do
+
+        let(:opts) { {force: true} }
+
+        it 'creates an empty directory' do
+          Lamp::Actions.directory @dst, opts
+          (@dst + 'xyz').should_not exist
+        end
+
+        include_examples 'directory permissions'
+
       end
 
     end
@@ -32,6 +49,7 @@ describe Lamp::Actions do
         (@dst + 'x').should be_directory
         (@dst + 'x').entries.reject { |e| %w(. ..).include? e.to_s }.compact.size.should be_zero
       end
+      include_examples 'directory permissions'
     end
 
     context 'when the path is a file' do
