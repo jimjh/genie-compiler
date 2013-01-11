@@ -42,6 +42,10 @@ describe Lamp::Lesson do
         expect { Lamp::Lesson::rm NAME }.to_not raise_error
       end
 
+      it 'raises an error if remove is given an unsafe name' do
+        expect { Lamp::Lesson.rm '../jimjh/x' }.to raise_error Lamp::Lesson::NameError
+      end
+
     end
 
   end

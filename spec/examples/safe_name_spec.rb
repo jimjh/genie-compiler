@@ -13,9 +13,5 @@ describe 'ensure_safe_name' do
     expect { Lamp::Lesson.create 'x', '../jimjh/x' }.to raise_error E
   end
 
-  it 'raises an error if remove is given an unsafe name' do
-    expect { Lamp::Lesson.rm '../jimjh/x' }.to raise_error E
-  end
-
 end
 
