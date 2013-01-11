@@ -49,23 +49,25 @@ module Lamp
         Pathname.new(Lamp.settings.root) + 'lock' + name
       end
 
+      # Ensures that the source and compiled directories exist.
+      # @return [void]
+      def prepare_directories
+        directory compiled_path, mode: PERMISSIONS[:public_dir]
+        [source_path, lock_path].each { |p| directory p, mode: PERMISSIONS[:private_dir] }
+        directory solution_path, mode: PERMISSIONS[:shared_dir]
+      end
+
       private
 
       # Dynamically defines getter methods for +source_path+, +compiled_path+
       # etc.
       # @param  [Array] names               array of path names
-      # @return [Void]
+      # @return [void]
       def path_reader(*names)
         names.each do |name|
           m = (name.to_s + '_path').to_sym
           define_method(m) { Lesson.public_send m, self.name }
         end
-      end
-
-      # Ensures that the source and compiled directories exist.
-      # @return [Void]
-      def prepare_directories
-        [source_path, compiled_path, solution_path, lock_path].each { |path| directory path }
       end
 
       # Ensures that the given name is safe for use in a path.
@@ -80,7 +82,6 @@ module Lamp
 
     end
 
-    prepare_directories
     attr_reader :repo, :name
 
     # Creates a new lesson from the given repo and name.

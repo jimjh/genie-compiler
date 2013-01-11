@@ -5,9 +5,6 @@ module Lamp
     # Name of lock file.
     LOCK_FILE = 'lamp.lock'
 
-    # UNIX file permissions for lock file.
-    LOCK_PERM = 0600
-
     class << self
 
       private
@@ -17,8 +14,8 @@ module Lamp
       # @return [File]  lock file
       def obtain_lock(name)
         dir = lock_path(name)
-        directory dir
-        f = File.new dir+LOCK_FILE, File::RDWR|File::CREAT, LOCK_PERM
+        directory dir, mode: PERMISSIONS[:private_dir]
+        f = File.new dir+LOCK_FILE, File::RDWR|File::CREAT, PERMISSIONS[:private_file]
         raise LockError.new 'Unable to obtain lock.' if f.nil?
         f.flock File::LOCK_EX
         Lamp.logger.record :lock, name

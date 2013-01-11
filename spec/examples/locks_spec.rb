@@ -2,65 +2,111 @@
 require 'spec_helper'
 require 'timeout'
 
-describe 'Lamp::Lesson::obtain_lock and Lamp::Lesson::release_lock' do
+describe Lamp::Lesson do
 
-  TIMEOUT = 0.6
-
-  context 'given a fake repo' do
+  describe '::obtain_lock and ::release_lock' do
 
     include_context 'lesson repo'
 
-    it 'should not be able to clone without lock' do
-      lock = Lamp::Lesson.send :obtain_lock, 'test'
-      expect { Lamp::Lesson.clone_from url, 'test' }.to timeout(TIMEOUT)
-      Lamp::Lesson.send :release_lock, lock
-      expect { Lamp::Lesson.clone_from url, 'test' }.to_not timeout(TIMEOUT)
+    TIMEOUT = 0.6
+    NAME    = SecureRandom.uuid
+
+    alias :original_timeout :timeout
+    def timeout; original_timeout TIMEOUT; end
+
+    context 'given a fake repo' do
+
+      context 'and a locked, but non-existent lesson' do
+
+        before(:each) { @lock = Lamp::Lesson.send :obtain_lock, NAME }
+        after(:each)  { Lamp::Lesson.send :release_lock, @lock }
+
+        it 'is unable to clone' do
+          expect { Lamp::Lesson.clone_from url, NAME }.to timeout
+        end
+
+        it 'is unable to create' do
+          expect { Lamp::Lesson.create url, NAME }.to timeout
+        end
+
+        it 'is able to create a different lesson' do
+          expect { Lamp::Lesson.create url, 'test-1' }.to_not timeout
+        end
+
+      end
+
+      context 'and a locked, but existing lesson' do
+
+        before :each do
+          Lamp::Lesson.clone_from url, NAME
+          @lock = Lamp::Lesson.send :obtain_lock, NAME
+        end
+
+        after :each do
+          Lamp::Lesson.send :release_lock, @lock
+          Lamp::Lesson.rm NAME
+        end
+
+        it 'is unable to remove' do
+          expect { Lamp::Lesson.rm NAME }.to timeout
+        end
+
+        it 'is unable to compile' do
+          expect { Lamp::Lesson.compile NAME }.to timeout
+        end
+
+      end
+
+      context 'and an unlocked lesson' do
+
+        after :each do
+          begin Lamp::Lesson.rm NAME
+          rescue Grit::NoSuchPathError
+          end
+        end
+
+        it 'is able to clone' do
+          expect { Lamp::Lesson.clone_from url, NAME }.to_not timeout
+        end
+
+        it 'is able to create' do
+          expect { Lamp::Lesson.create url, NAME }.to_not timeout
+        end
+
+        it 'is able to remove' do
+          Lamp::Lesson.clone_from url, NAME
+          expect { Lamp::Lesson.rm NAME }.to_not timeout
+        end
+
+        it 'is able to compile' do
+          Lamp::Lesson.clone_from url, NAME
+          expect { Lamp::Lesson.compile NAME }.to_not timeout
+        end
+
+        it 'created a private lock directory' do
+          Lamp::Lesson.lock_path(NAME).should have_mode(Lamp::PERMISSIONS[:private_dir])
+        end
+
+        it 'created a private lock file' do
+          lock = Lamp::Lesson.lock_path(NAME) + Lamp::Lesson::LOCK_FILE
+          lock.should have_mode(Lamp::PERMISSIONS[:private_file])
+        end
+
+      end
+
     end
 
-    it 'should not be able to create without lock' do
-      lock = Lamp::Lesson.send :obtain_lock, 'test'
-      expect { Lamp::Lesson.create url, 'test' }.to timeout(TIMEOUT)
-      Lamp::Lesson.send :release_lock, lock
-      expect { Lamp::Lesson.create url, 'test' }.to_not timeout(TIMEOUT)
-    end
+    context 'two operations' do
 
-    it 'should be able to remove without lock' do
-      Lamp::Lesson.clone_from url, 'test'
-      lock = Lamp::Lesson.send :obtain_lock, 'test'
-      expect { Lamp::Lesson.rm 'test' }.to timeout(TIMEOUT)
-      Lamp::Lesson.send :release_lock, lock
-      expect { Lamp::Lesson.rm 'test' }.to_not timeout(TIMEOUT)
-    end
+      let(:dir) { Pathname.new Lamp::Lesson.clone_from(url, NAME).repo.working_dir }
 
-    it 'should not be able to compile without lock' do
-      Lamp::Lesson.clone_from url, 'test'
-      lock = Lamp::Lesson.send :obtain_lock, 'test'
-      expect { Lamp::Lesson.compile 'test' }.to timeout(TIMEOUT)
-      Lamp::Lesson.send :release_lock, lock
-      expect { Lamp::Lesson.compile 'test' }.to_not timeout(TIMEOUT)
-    end
+      it 'completes one after another' do
+        dir.should be_directory
+        Lamp::Lesson.rm NAME
+        dir.should_not be_exist
+      end
 
-    it 'should be able to lock different lessons' do
-      Lamp::Lesson.clone_from url, 'test'
-      lock = Lamp::Lesson.send :obtain_lock, 'x'
-      expect { Lamp::Lesson.compile 'test' }.to_not timeout(TIMEOUT)
-      Lamp::Lesson.send :release_lock, lock
     end
 
   end
-
-  context 'two operations' do
-
-    include_context 'lesson repo'
-
-    it 'should complete one after another' do
-      lesson = Lamp::Lesson.clone_from url, 'test'
-      dir    = lesson.repo.working_dir
-      Pathname.new(dir).should be_exist
-      Lamp::Lesson.rm 'test'
-      Pathname.new(dir).should_not be_exist
-    end
-
-  end
-
 end

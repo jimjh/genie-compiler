@@ -22,12 +22,18 @@ module Lamp
 
   # Loads configuration options from +file+. This is not thread-safe, and
   # should only be called at the beginning.
-  # @param [String] file          path to configuration file
+  # @param [String|Hash] arg           path to configuration file, or hash
+  #                                    containing options
   # @return [void]
-  def configure!(file=CONFIG_FILE)
-    check_file      file
-    settings.load! file
+  def configure!(arg=CONFIG_FILE)
+    case arg
+    when String
+      check_file     arg
+      settings.load! arg
+    else settings.load! arg
+    end
     reset_logger
+    Lesson.prepare_directories
   end
 
   # Creates a new logger using the configuration options from {#settings}. This

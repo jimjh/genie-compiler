@@ -17,11 +17,12 @@ module Aladdin
       # Saves the problem's solution to a secret location for the game app to
       # retrieve for verification.
       # @todo TODO use the secure judge service if it's available.
+      # @todo TODO set permissions
       def save!(name)
         raise Lamp::Lesson::InvalidLessonError, 'Invalid problem encountered: %s' % name unless valid?
         solution = id + Aladdin::SOLUTION_EXT
         path = Lamp::Lesson.solution_path(name) + solution
-        Lamp::Actions.write_file(path, Marshal.dump(answer), 'wb+')
+        Lamp::Actions.write_file(path, Marshal.dump(answer), 'wb+', Lamp::PERMISSIONS[:shared_file])
       end
 
     end
