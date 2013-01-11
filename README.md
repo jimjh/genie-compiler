@@ -81,9 +81,9 @@ root/                                drwxr-xr-x
   |- source/                         drwx------
     |- jimjh/                        drwx------
       |- floating-point/             drwx------
-        |- manifest.json              rw-------
-        |- index.md                   rw-------
-        |- images/                   drwx------
+        |- manifest.json
+        |- index.md
+        |- images/
         |- ...
   |- solution/                       drwxr-x---
     |- jimjh/                        drwxr-x---
