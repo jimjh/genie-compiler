@@ -1,19 +1,24 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper.rb'
 
-describe 'Lamp::Lesson::create' do
+describe Lamp::Lesson do
 
-  context 'given a fake repository' do
+  describe '::create' do
 
-    include_context 'lesson repo'
+    context 'given a fake repository' do
 
-    it 'should clone, compile, and clean' do
-      lesson = Lamp::Lesson.create url, 'test'
-      Lamp::Lesson.source_path(lesson.name).should_not be_exist
-      Lamp::Lesson.compiled_path(lesson.name).should be_exist
+      include_context 'lesson repo'
+
+      NAME = 'test'
+
+      it 'clones, compiles, and cleans' do
+        lesson = Lamp::Lesson.create url, NAME
+        Lamp::Lesson.source_path(NAME).should_not be_exist
+        Lamp::Lesson.compiled_path(NAME).should be_exist
+      end
+
     end
 
   end
 
 end
-
