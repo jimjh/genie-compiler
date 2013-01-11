@@ -20,8 +20,9 @@ module Lamp
     # @param [String|Pathname] path       path to file
     # @param [String] contents            contents to be written
     # @param [String] mode                e.g. wb+
+    # @param [Fixnum] perm                e.g. 0700
     # @return [void]
-    def write_file(path, contents, mode)
+    def write_file(path, contents, *args)
       path     = Pathname.new path unless path.is_a? Pathname
       skip, op = false, :create
       if path.exist?
@@ -31,7 +32,7 @@ module Lamp
         end
       end
       Lamp.logger.record op, path.basename
-      open(path, mode) { |file| file.write contents } unless skip
+      open(path, *args) { |file| file.write contents } unless skip
     end
 
     # Raises an FileError.

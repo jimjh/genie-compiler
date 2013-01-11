@@ -30,10 +30,12 @@ module Lamp
     # attacks in +@manifest[:static_paths]+.
     # @return [Pathname] path to compiled lesson
     def compile
-      directory compiled_path, force: true
+      directory compiled_path, force: true, mode: PERMISSIONS[:public_dir]
       directory solution_path, force: true
       sources = [Aladdin::Config::FILE] + @manifest[:static_paths]
-      copy_secure source_path, compiled_path, sources
+      copy_secure source_path, compiled_path, sources,
+        file_mode: PERMISSIONS[:public_file],
+        dir_mode:  PERMISSIONS[:public_dir]
       Pathname.glob(source_path+GLOB).each { |path| render path, compiled_path }
       compiled_path
     end
@@ -49,7 +51,9 @@ module Lamp
       rndr = Aladdin::Render::HTML.new name: name
       mkdn = Redcarpet::Markdown.new(rndr, Aladdin::MARKDOWN_EXTENSIONS)
       html = mkdn.render File.read source.to_s
-      write_file destination + source.basename.sub_ext(EXT), html, 'w+'
+      write_file destination + source.basename.sub_ext(EXT),
+        html, 'w+',
+        PERMISSIONS[:public_file]
     end
 
   end

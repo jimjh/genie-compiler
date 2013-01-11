@@ -46,6 +46,21 @@ describe Lamp::Lesson do
 
         end
 
+        it 'creates an output directory with public permissions' do
+          compile
+          dest.should have_mode Lamp::PERMISSIONS[:public_dir]
+        end
+
+        it 'creates static directories with public permissions' do
+          compile
+          (dest + 'img').should have_mode Lamp::PERMISSIONS[:public_dir]
+        end
+
+        it 'creates files with public permissions' do
+          compile
+          (dest + 'img' + 'x').should have_mode Lamp::PERMISSIONS[:public_file]
+        end
+
         it 'copies static assets to target directory' do
           compile
           IO.read(dest + 'img' + 'x').should eql @rand
@@ -72,12 +87,18 @@ describe Lamp::Lesson do
         let(:x) { (dest + 'x').sub_ext Lamp::Lesson::EXT }
         let(:y) { (dest + 'y').sub_ext Lamp::Lesson::EXT }
 
-        it 'should render all markdown sources into html' do
+        it 'renders all markdown sources into html' do
           compile
           x.should be_file
           y.should be_file
           IO.read(x).should match "<em>#{@rand_x}</em>"
           IO.read(y).should match "<code>#{@rand_y}</code>"
+        end
+
+        it 'creates html files with public permissions' do
+          compile
+          x.should have_mode(Lamp::PERMISSIONS[:public_file])
+          y.should have_mode(Lamp::PERMISSIONS[:public_file])
         end
 
       end
