@@ -1,54 +1,88 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper'
 
-describe 'Lamp::Lesson::compile' do
+describe Lamp::Lesson do
 
-  context 'given a lesson source' do
+  describe '::compile' do
 
-    include_context 'lesson repo'
+    context 'given a lesson source' do
 
-    def compile
-      Lamp::Lesson.clone_from url, 'test'
-      Lamp::Lesson.compile 'test'
-    end
+      include_context 'lesson repo'
+      NAME = SecureRandom.uuid
 
-    it 'should ensure that the target directory is empty' do
-      dest = empty_directory Lamp::Lesson.compiled_path + 'test'
-      rand = random_file dest + Aladdin::Config::FILE
-      compile
-      IO.read(dest + Aladdin::Config::FILE).should_not eql rand
-    end
+      before(:each) { Lamp::Lesson.clone_from url, NAME }
+      after(:each)  { Lamp::Lesson.rm NAME }
+      let(:src)     { Pathname.new Lamp::Lesson.source_path   NAME }
+      let(:dest)    { Pathname.new Lamp::Lesson.compiled_path NAME }
+      def compile; Lamp::Lesson.compile NAME; end
 
-    it 'should copy static assets to target directory' do
-      empty_directory @fake_repo + 'img'
-      rand = random_file @fake_repo + 'img' + 'x'
-      IO.write @fake_repo + Aladdin::Config::FILE, '{"static_paths": ["img"]}'
-      commit_all
-      compile
-      IO.read(Lamp::Lesson.compiled_path('test') + 'img' + 'x').should eql rand
-    end
+      context 'and an existing output directory' do
 
-    it 'should not copy anything else' do
-      random_file @fake_repo + 'x'
-      random_file @fake_repo + 'y'
-      empty_directory @fake_repo + 'z'
-      random_file @fake_repo + 'z' + 'w'
-      commit_all
-      compile
-      (Lamp::Lesson.compiled_path('test') + 'x').should_not be_exist
-      (Lamp::Lesson.compiled_path('test') + 'y').should_not be_exist
-      (Lamp::Lesson.compiled_path('test') + 'z').should_not be_exist
-      (Lamp::Lesson.compiled_path('test') + 'z' + 'w').should_not be_exist
-    end
+        before :each do
+          empty_directory dest
+          @rand = random_file dest + Aladdin::Config::FILE
+        end
 
-    it 'should render all markdown sources into html' do
-      rand = random_file(@fake_repo + 'x.md')  { |r| "_#{r}_" }
-      commit_all
-      compile
-      IO.read(Lamp::Lesson.compiled_path('test') + 'x.inc').should match "<em>#{rand}</em>"
+        it 'overwrites the output directory' do
+          compile
+          IO.read(dest + Aladdin::Config::FILE).should_not eql @rand
+        end
+
+      end
+
+      context 'and some static assets' do
+
+        before :each do
+
+          empty_directory src + 'img'
+          @rand = random_file src + 'img' + 'x'
+          IO.write src + Aladdin::Config::FILE, '{"static_paths": ["img"]}'
+
+          random_file src + 'x'
+          random_file src + 'y'
+          empty_directory src + 'z'
+          random_file src + 'z' + 'w'
+          commit_all
+
+        end
+
+        it 'copies static assets to target directory' do
+          compile
+          IO.read(dest + 'img' + 'x').should eql @rand
+        end
+
+        it 'does not copy anything else' do
+          compile
+          (dest + 'x').should_not be_exist
+          (dest + 'y').should_not be_exist
+          (dest + 'z').should_not be_exist
+          (dest + 'z' + 'w').should_not be_exist
+        end
+
+      end
+
+      context 'and a few markdown sources' do
+
+        before :each do
+          @rand_x = random_file(src + 'x.md')  { |r| "_#{r}_" }
+          @rand_y = random_file(src + 'y.md')  { |r| "`#{r}`" }
+          commit_all
+        end
+
+        let(:x) { (dest + 'x').sub_ext Lamp::Lesson::EXT }
+        let(:y) { (dest + 'y').sub_ext Lamp::Lesson::EXT }
+
+        it 'should render all markdown sources into html' do
+          compile
+          x.should be_file
+          y.should be_file
+          IO.read(x).should match "<em>#{@rand_x}</em>"
+          IO.read(y).should match "<code>#{@rand_y}</code>"
+        end
+
+      end
+
     end
 
   end
-
 end
-

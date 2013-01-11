@@ -9,7 +9,7 @@ describe Lamp::Lesson do
     include_context 'lesson repo'
 
     TIMEOUT = 0.6
-    NAME    = 'test'
+    NAME    = SecureRandom.uuid
 
     alias :original_timeout :timeout
     def timeout; original_timeout TIMEOUT; end
