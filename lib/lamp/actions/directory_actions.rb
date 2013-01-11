@@ -61,7 +61,7 @@ module Lamp
     # @param [String|Pathname] dest     destination directory
     # @option opts [Fixum] file_mode       UNIX permissions for files
     # @option opts [Fixum] dir_mode        UNIX permissions for directories
-    # @return [void]
+    # @return [String|Pathname] dest
     def copy(src, dest, opts={})
       src, dest = to_path(src), to_path(dest)
       not_found     src  unless src.exist?
@@ -76,6 +76,7 @@ module Lamp
           end
         end
       end
+      dest
     end
 
     # Invokes given block on each child recursively. Note that +Dir.glob(*/**)+
