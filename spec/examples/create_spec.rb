@@ -19,6 +19,10 @@ describe Lamp::Lesson do
 
     end
 
+    it 'raises an error if create is given an unsafe name' do
+      expect { Lamp::Lesson.create 'x', '../jimjh/x' }.to raise_error Lamp::Lesson::NameError
+    end
+
   end
 
 end

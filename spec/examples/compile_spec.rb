@@ -105,5 +105,9 @@ describe Lamp::Lesson do
 
     end
 
+    it 'raises an error if compile is given an unsafe name' do
+      expect { Lamp::Lesson.compile '../jimjh/x' }.to raise_error Lamp::Lesson::NameError
+    end
+
   end
 end
