@@ -1,7 +1,7 @@
 # ~*~ encoding: utf-8 ~*~
 require 'json'
 require 'pathname'
-require 'aladdin/config'
+require 'spirit/constants'
 
 require 'lamp/lesson/errors'
 require 'lamp/lesson/locks'
@@ -91,13 +91,18 @@ module Lamp
     #   +manifest.json+ and a valid +index.md+.
     def initialize(repo, name)
       @repo, @name = repo, name
-      check_file File.expand_path(Aladdin::Config::FILE, repo.working_dir)
-      check_file File.expand_path(Aladdin::INDEX_MD, repo.working_dir)
-      @manifest = Aladdin::Config.new @repo.working_dir
+      manifest_file = File.expand_path(Spirit::MANIFEST, repo.working_dir)
+      check_file manifest_file
+      check_file File.expand_path(Spirit::INDEX, repo.working_dir)
+      @manifest = Spirit::Manifest.load_file manifest_file
     end
 
     private
     path_reader :source, :compiled, :solution
+
+    def static_paths
+      @manifest[:static_paths] || %w(images)
+    end
 
   end
 

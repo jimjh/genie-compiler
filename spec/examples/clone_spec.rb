@@ -65,7 +65,7 @@ describe Lamp::Lesson do
       context 'with a missing index.md' do
 
         before :each do
-          (@fake_repo + Aladdin::INDEX_MD).unlink
+          (@fake_repo + Spirit::INDEX).unlink
           commit_all
         end
 
@@ -78,7 +78,7 @@ describe Lamp::Lesson do
       context 'with a missing manifest' do
 
         before :each do
-          (@fake_repo + Aladdin::Config::FILE).unlink
+          (@fake_repo + Spirit::MANIFEST).unlink
           commit_all
         end
 
@@ -95,7 +95,7 @@ describe Lamp::Lesson do
 
         it 'overwrites any existing lessons' do
           clone.repo.head.commit.id.should eq master
-          (dir + Aladdin::Config::FILE).should be_file
+          (dir + Spirit::MANIFEST).should be_file
           (dir + 'x').should_not be_file
         end
 

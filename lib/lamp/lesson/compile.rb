@@ -1,5 +1,5 @@
 # ~*~ encoding: utf-8 ~*~
-require 'aladdin/render'
+require 'spirit'
 
 module Lamp
 
@@ -32,7 +32,7 @@ module Lamp
     def compile
       directory compiled_path, force: true, mode: PERMISSIONS[:public_dir]
       directory solution_path, force: true
-      sources = [Aladdin::Config::FILE] + @manifest[:static_paths]
+      sources = [Spirit::MANIFEST] + static_paths
       copy_secure source_path, compiled_path, sources,
         file_mode: PERMISSIONS[:public_file],
         dir_mode:  PERMISSIONS[:public_dir]
@@ -48,9 +48,7 @@ module Lamp
     # @param [Pathname] destination       path to output directory
     # @return [Fixnum] number of bytes written
     def render(source, destination)
-      rndr = Aladdin::Render::HTML.new name: name
-      mkdn = Redcarpet::Markdown.new(rndr, Aladdin::MARKDOWN_EXTENSIONS)
-      html = mkdn.render File.read source.to_s
+      html = File.open(source, 'r:utf-8') { |f| Spirit::Document.new(f).render }
       write_file destination + source.basename.sub_ext(EXT),
         html, 'w+',
         PERMISSIONS[:public_file]

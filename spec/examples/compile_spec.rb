@@ -20,12 +20,12 @@ describe Lamp::Lesson do
 
         before :each do
           empty_directory dest
-          @rand = random_file dest + Aladdin::Config::FILE
+          @rand = random_file dest + Spirit::MANIFEST
         end
 
         it 'overwrites the output directory' do
           compile
-          IO.read(dest + Aladdin::Config::FILE).should_not eql @rand
+          IO.read(dest + Spirit::MANIFEST).should_not eql @rand
         end
 
       end
@@ -36,7 +36,7 @@ describe Lamp::Lesson do
 
           empty_directory src + 'img'
           @rand = random_file src + 'img' + 'x'
-          IO.write src + Aladdin::Config::FILE, '{"static_paths": ["img"]}'
+          IO.write src + Spirit::MANIFEST, '{"static_paths": ["img"]}'
 
           random_file src + 'x'
           random_file src + 'y'
