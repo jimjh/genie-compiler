@@ -1,6 +1,5 @@
 # ~*~ encoding: utf-8 ~*~
 require 'lamp/support/settings'
-require 'lamp/support/spirit_ext/problem'
 
 module Lamp
   # lamp-support contains a bunch of support modules and classes.

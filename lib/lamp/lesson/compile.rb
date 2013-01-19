@@ -1,5 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spirit'
+require 'lamp/lesson/problem_strategy'
 
 module Lamp
 
@@ -48,10 +49,12 @@ module Lamp
     # @param [Pathname] destination       path to output directory
     # @return [Fixnum] number of bytes written
     def render(source, destination)
-      html = File.open(source, 'r:utf-8') { |f| Spirit::Document.new(f).render }
+      strategy = ProblemStrategy.create solution_path
+      html = File.open(source, 'r:utf-8') do |f|
+        Spirit::Document.new(f, prob_strat: strategy).render
+      end
       write_file destination + source.basename.sub_ext(EXT),
-        html, 'w+',
-        PERMISSIONS[:public_file]
+        html, 'w+', PERMISSIONS[:public_file]
     end
 
   end
