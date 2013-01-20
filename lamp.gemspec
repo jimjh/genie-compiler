@@ -29,7 +29,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'grit',          '~> 2.5.0'
   gem.add_dependency 'activesupport', '~> 3.2.9'
   gem.add_dependency 'thor',          '~> 0.16.0'
-  gem.add_dependency 'spirit',        '~> 0.1.0.pre'
+  gem.add_dependency 'spirit',        '~> 0.1.0.pre.1'
 
   gem.add_development_dependency 'yard',         '~> 0.8.3'
   gem.add_development_dependency 'debugger-pry', '~> 0.1.1'

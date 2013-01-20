@@ -6,8 +6,6 @@
 # wrote both gems, you would think I have a better solution.
 #
 # Guess who's not getting the Best Coding Practices award.
-#
-# TODO: use strategy pattern
 require 'spirit'
 
 module Spirit
