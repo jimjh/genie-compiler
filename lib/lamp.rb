@@ -22,7 +22,7 @@ module Lamp
 
   # Loads configuration options from +file+. This is not thread-safe, and
   # should only be called at the beginning.
-  # @param [String|Hash] arg           path to configuration file, or hash
+  # @param [String, Hash] arg          path to configuration file, or hash
   #                                    containing options
   # @return [void]
   def configure!(arg=CONFIG_FILE)
