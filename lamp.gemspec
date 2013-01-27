@@ -10,7 +10,6 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 1.9.2'
 
   # LICENSES
-  gem.license       = 'MIT'
   gem.authors       = ['Jiunn Haur Lim']
   gem.email         = ['codex.is.poetry@gmail.com']
   gem.description   = %q{Compiles lessons.}
