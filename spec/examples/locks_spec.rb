@@ -84,10 +84,12 @@ describe Lamp::Lesson do
         end
 
         it 'created a private lock directory' do
+          Lamp::Lesson.clone_from url, NAME
           Lamp::Lesson.lock_path(NAME).should have_mode(Lamp::PERMISSIONS[:private_dir])
         end
 
         it 'created a private lock file' do
+          Lamp::Lesson.clone_from url, NAME
           lock = Lamp::Lesson.lock_path(NAME) + Lamp::Lesson::LOCK_FILE
           lock.should have_mode(Lamp::PERMISSIONS[:private_file])
         end
