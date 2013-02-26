@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.email         = ['codex.is.poetry@gmail.com']
   gem.description   = %q{Compiles lessons.}
   gem.summary       = %q{Compiles lessons.}
-  gem.homepage      = 'https://github.com/jimjh/genie-worker'
+  gem.homepage      = 'https://github.com/jimjh/genie-compiler'
 
   # PATHS
   gem.require_paths = %w[lib]

@@ -1,9 +1,10 @@
-# genie-worker
-The worker is called upon to compile lessons from their source files into a
-web-publishable format.
+# genie-compiler
+
+The compiler is a service that shares a file system with the web server. It
+compiles lessons from their source files into a web-publishable format.
 
 ## Configuration
-The worker expects a configuration file at `/usr/local/etc/genie/worker.yml`.
+The compiler expects a configuration file at `/usr/local/etc/genie/compiler.yml`.
 Refer to `lib/lamp/constants.rb` for defaults.
 <dl>
   <dt>root</dt>
@@ -24,7 +25,7 @@ $> lamp clone [--branch=BRANCH] [--] GIT_URL LESSON_PATH
 ```
 
 `BRANCH` defaults to `master`, and the repository is cloned to
-`{ROOT}/source/{LESSON_PATH}`. Upon cloning, the worker performs a basic
+`{ROOT}/source/{LESSON_PATH}`. Upon cloning, the compiler performs a basic
 validation on the repository. The validation rules are:
 
 - contains a valid `manifest.json`

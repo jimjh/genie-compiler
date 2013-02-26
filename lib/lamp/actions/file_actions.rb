@@ -17,10 +17,11 @@ module Lamp
     end
 
     # Writes a file.
-    # @param [String|Pathname] path       path to file
-    # @param [String] contents            contents to be written
-    # @param [String] mode                e.g. wb+
-    # @param [Fixnum] perm                e.g. 0700
+    # @overload write_file(path, contents, mode, perm)
+    #   @param [String|Pathname] path       path to file
+    #   @param [String] contents            contents to be written
+    #   @param [String] mode                e.g. wb+
+    #   @param [Fixnum] perm                e.g. 0700
     # @return [void]
     def write_file(path, contents, *args)
       path     = Pathname.new path unless path.is_a? Pathname
