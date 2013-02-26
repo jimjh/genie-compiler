@@ -12,8 +12,8 @@ Gem::Specification.new do |gem|
   # LICENSES
   gem.authors       = ['Jiunn Haur Lim']
   gem.email         = ['codex.is.poetry@gmail.com']
-  gem.description   = %q{Compiles lessons.}
-  gem.summary       = %q{Compiles lessons.}
+  gem.description   = %q{Compiles lessons for genie.}
+  gem.summary       = %q{Compiles lessons for genie.}
   gem.homepage      = 'https://github.com/jimjh/genie-compiler'
 
   # PATHS
@@ -25,9 +25,11 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
 
   # DEPENDENCIES
-  gem.add_dependency 'grit',          '~> 2.5.0'
-  gem.add_dependency 'activesupport', '~> 3.2.9'
+  gem.add_dependency 'thrift',        '~> 0.9.0'
   gem.add_dependency 'thor',          '~> 0.16.0'
+  gem.add_dependency 'activesupport', '~> 3.2.9'
+  gem.add_dependency 'grit',          '~> 2.5.0'
+  gem.add_dependency 'pry',           '~> 0.9.11'
   gem.add_dependency 'spirit',        '~> 0.1.0.pre.1'
 
   gem.add_development_dependency 'yard',         '~> 0.8.3'

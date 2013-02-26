@@ -1,21 +1,42 @@
 # genie-compiler
 
-The compiler is a service that shares a file system with the web server. It
+The compiler is a service that shares a filesystem with the web server. It
 compiles lessons from their source files into a web-publishable format.
 
 ## Configuration
-The compiler expects a configuration file at `/usr/local/etc/genie/compiler.yml`.
-Refer to `lib/lamp/constants.rb` for defaults.
-<dl>
-  <dt>root</dt>
-  <dd>Default output directory. Should probably be on a networked file system like EBS</dd>
-  <dt>log_output</dt>
-  <dd>Path to log file. Ruby's logger will automatically rotate the logs.</dd>
-</dl>
+Configuration options are available in `lib/lamp/config.rb`.
+
+## Usage
+
+To get a list of all commands and their options, use
+
+```sh
+$ lamp help
+```
+
+To start the service, on an OS-selected port, use
+
+```sh
+$ lamp server
+```
+
+To start the client, use
+
+```sh
+$ lamp client --port=PORT COMMAND
+```
+
+If command is not provided, a pry console will be launched. For example,
+
+```
+$ bin/lamp client --port=12345
+[1] pry(#<Tangle::Client>)> info
+=> <LampInfo uptime: ..., threads: ...>
+```
 
 ## Workflow
-All of these operations begin with obtaining a lock (at
-`{ROOT}/locks/{LESSON_PATH}`) and end with releasing the lock.
+All of these operations begin with obtaining a lock
+(at `{ROOT}/locks/{LESSON_PATH}`) and end with releasing the lock.
 
 ### Clone a Git Repository
 Clones the git repository at the given URL to the output directory.
