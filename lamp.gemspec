@@ -32,6 +32,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'pry',           '~> 0.9.11'
   gem.add_dependency 'spirit',        '~> 0.1.0.pre.1'
 
+  gem.add_development_dependency 'mocha',        '~> 0.10.5'
   gem.add_development_dependency 'yard',         '~> 0.8.3'
   gem.add_development_dependency 'debugger-pry', '~> 0.1.1'
   gem.add_development_dependency 'rspec',        '~> 2.12.0'
