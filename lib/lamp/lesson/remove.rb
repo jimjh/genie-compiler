@@ -21,7 +21,7 @@ module Lamp
     # Removes the source and compiled directories of this lesson, if they
     # exist.
     def rm
-      [source_path, compiled_path, solution_path].each { |p| remove p }
+      [source_path, compiled_path, solution_path].each { |p| Actions.remove p }
     end
 
   end

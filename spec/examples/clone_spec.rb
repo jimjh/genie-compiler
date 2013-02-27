@@ -1,7 +1,8 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper'
+require 'lamp/lesson'
 
-describe Lamp::Lesson do
+describe Lamp::Lesson  do
 
   describe '::clone_from' do
 

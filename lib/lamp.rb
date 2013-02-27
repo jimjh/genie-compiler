@@ -1,51 +1,66 @@
 # ~*~ encoding: utf-8 ~*~
+require 'pathname'
+require 'thrift'
 require 'active_support/core_ext/hash'
 
-require 'lamp/constants'
+require 'lamp/version'
+require 'lamp/config'
+require 'lamp/errors'
 require 'lamp/logger'
 require 'lamp/support'
-require 'lamp/actions'
 
-# Lamp a.k.a Genie Worker is responsible for compiling lesson sources. When the
-# Lamp module is first loaded, invoke {#configure!} to read configuration
-# options from {CONFIG_FILE}.
 module Lamp
-  include Actions
-  extend self
+  class << self
 
-  attr_reader     :logger
+    attr_reader :logger, :root
 
-  # @return [Support::Settings] lamp's settings singleton
-  def settings
-    Support::Settings
-  end
-
-  # Loads configuration options from +file+. This is not thread-safe, and
-  # should only be called at the beginning.
-  # @param [String, Hash] arg          path to configuration file, or hash
-  #                                    containing options
-  # @return [void]
-  def configure!(arg=CONFIG_FILE)
-    case arg
-    when String
-      check_file     arg
-      settings.load! arg
-    else settings.load! arg
+    # @option opts [String] log-file  ({Lamp::LOG_FILE})
+    # @option opts [String] log-level ({Lamp::LOG_LEVEL})
+    def reset_logger(opts={})
+     @logger = Logger.new(opts['log-file'] || LOG_FILE)
+     @logger.level = opts['log-level'] || LOG_LEVEL
+     @logger.formatter = Logger::Formatter.new
+     @logger.info "Lamp v#{VERSION}"
     end
-    reset_logger
-    Lesson.prepare_directories
-  end
 
-  # Creates a new logger using the configuration options from {#settings}. This
-  # is not thread-safe, and should only be called at the beginning.
-  # @return [void]
-  def reset_logger
-    @logger = Logger.new settings.log_output
-  end
+    # @option opts [String] path to root
+    def reset_root(opts={})
+      @root = opts['root'] || ROOT
+    end
 
-  settings.defaults_to DEFAULTS
-  reset_logger
+    # Starts a RPC server. See {Lamp::Server} for options.
+    def server(opts={})
+      reset_root   opts
+      reset_logger opts
+      require 'lamp/server'
+      Server.new(opts).serve.value
+    rescue Interrupt
+      logger.info 'Extinguished.'
+    end
+
+    # Starts a client and invokes the given command. If a command is not
+    # provided, starts a pry console. See {Lamp::Client} for options.
+    # @param [String] cmd       RPC command to invoke
+    # @param [Array]  argv      parameters for command
+    # @return [void]
+    def client(cmd=nil, argv=[], opts={})
+      reset_logger opts
+      require 'lamp/client'
+      client = Client.new(opts)
+      results = invoke client, cmd, argv
+      logger.info "Response: #{results.inspect}"
+    end
+
+    private
+
+    def invoke(client, cmd, argv)
+      if cmd.nil?
+        require 'pry'
+        client.invoke { pry }
+      else client.invoke { public_send(cmd, *argv) }
+      end
+    end
+
+  end
 
 end
-
-require 'lamp/lesson'

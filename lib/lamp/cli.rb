@@ -1,41 +1,32 @@
 # ~*~ encoding: utf-8 ~*~
-require 'lamp'
 require 'thor'
+require 'lamp'
 
 module Lamp
 
-  # The lamp-cli module exposes a command-line interface using Thor.
+  # Exposes a command-line interface using Thor.
   class Cli < Thor
 
-    desc 'clone GIT_URL LESSON_PATH', 'Clones the git repository at GIT_URL to LESSON_PATH'
-    option :branch, type: :string, default: Lesson::DEFAULTS[:branch]
-    def clone(url, subpath)
-      Lesson::clone_from url, subpath, branch: options['branch']
+    class_option :'log-file',  type: :string,  default: nil
+    class_option :'log-level', type: :numeric, default: LOG_LEVEL
+
+    desc 'server', 'start a RPC server'
+    option :port, type: :numeric, default: PORT
+    def server
+      ::Lamp.server options
     end
 
-    desc 'compile LESSON_PATH', 'Generates compressed HTML files from the lesson source at LESSON_PATH'
-    def compile(subpath)
-      Lesson::compile subpath
+    desc 'client COMMAND', 'use client to invoke remote RPC call'
+    option :host, type: :string, default: HOST
+    option :port, type: :numeric, required: true
+    def client
+      ::Lamp.client args.shift, args, options
     end
 
-    desc 'create GIT_URL LESSON_PATH', 'Creates a lesson from the git repository at the given URL.'
-    option :branch, type: :string, default: Lesson::DEFAULTS[:branch]
-    def create(url, subpath)
-      Lesson::create url, subpath, branch: options['branch']
-    end
-
-    desc 'rm LESSON_PATH', 'Removes lesson source and compiled files.'
-    def rm(subpath)
-      Lesson::rm subpath
-    end
-
-    # Configures Lamp with the default options.
     def self.start(argv)
-      Lamp.configure!
       super
-    rescue Error => e
-      puts e.message
-      puts '» The operation failed.'
+    rescue Abort => e
+      ::Lamp.logger.error e.message
       exit 1
     end
 

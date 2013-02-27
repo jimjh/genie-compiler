@@ -1,55 +1,48 @@
 # genie-compiler
 
-The compiler is a service that shares a file system with the web server. It
+The compiler is a service that shares a filesystem with the web server. It
 compiles lessons from their source files into a web-publishable format.
 
 ## Configuration
-The compiler expects a configuration file at `/usr/local/etc/genie/compiler.yml`.
-Refer to `lib/lamp/constants.rb` for defaults.
-<dl>
-  <dt>root</dt>
-  <dd>Default output directory. Should probably be on a networked file system like EBS</dd>
-  <dt>log_output</dt>
-  <dd>Path to log file. Ruby's logger will automatically rotate the logs.</dd>
-</dl>
+Configuration options are available in `lib/lamp/config.rb`.
+
+## Usage
+
+To get a list of all commands and their options, use
+
+```sh
+$ lamp help
+```
+
+To start the service, on an OS-selected port, use
+
+```sh
+$ lamp server
+```
+
+To start the client, use
+
+```sh
+$ lamp client --port=PORT COMMAND
+```
+
+If command is not provided, a pry console will be launched. For example,
+
+```
+$ bin/lamp client --port=12345
+[1] pry(#<Tangle::Client>)> info
+=> <LampInfo uptime: ..., threads: ...>
+```
 
 ## Workflow
-All of these operations begin with obtaining a lock (at
-`{ROOT}/locks/{LESSON_PATH}`) and end with releasing the lock.
-
-### Clone a Git Repository
-Clones the git repository at the given URL to the output directory.
-
-```sh
-$> lamp clone [--branch=BRANCH] [--] GIT_URL LESSON_PATH
-```
-
-`BRANCH` defaults to `master`, and the repository is cloned to
-`{ROOT}/source/{LESSON_PATH}`. Upon cloning, the compiler performs a basic
-validation on the repository. The validation rules are:
-
-- contains a valid `manifest.json`
-- contains a valid `index.md`
-
-If the validation fails, the program deletes the directory, and terminates with
-an error code.
-
-### Compile Lesson
-Generates compressed HTML files from the lesson source at `LESSON_PATH`.
-
-```sh
-$> lamp compile LESSON_PATH
-```
-
-The output directory is `{ROOT}/compiled/{LESSON_PATH}`.  Files and directories
-at static paths (defined in `manifest.json`) are copied to the output
-directory.
+All of these operations begin with obtaining a lock
+(at `{ROOT}/locks/{LESSON_PATH}`) and end with releasing the lock.
 
 ### Create Lesson
 Creates a lesson from the git repository at the given URL.
 
-```sh
-$> lamp create [--branch=BRANCH] [--] GIT_URL LESSON_PATH
+```rb
+create(git_url, lesson_path, branch = 'master')
 ```
 
 Does a `clone` followed by `compile`. In addition, the
