@@ -34,13 +34,21 @@ RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
 
-  config.before(:suite) { Lamp.reset_logger 'log-file' => Test::OUTPUT }
-  config.before(:each)  { Lamp.stubs(:reset_logger) }
+  config.before(:suite) do
+    Lamp.reset_logger 'log-file' => Test::OUTPUT
+    Lamp.reset_root   'root' => Dir.mktmpdir
+  end
+
+  config.before(:each) do
+    Lamp.stubs(:reset_logger)
+    Lamp.stubs(:reset_root)
+  end
+
   config.after(:each)   { Test::OUTPUT.truncate 0 }
 
-  # config.after :suite do
-  #  FileUtils.remove_entry_secure Lamp.settings.root
-  # end
+  config.after(:suite) do
+    FileUtils.remove_entry_secure Lamp.root
+  end
 
 end
 

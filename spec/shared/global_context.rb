@@ -9,6 +9,7 @@ module Test
     extend RSpec::Core::SharedContext
 
     let(:output) { OUTPUT.flush; OUTPUT.string }
+    before(:all) { Lamp::Lesson.prepare_directories }
 
   end
 

@@ -8,12 +8,11 @@ require 'lamp/config'
 require 'lamp/errors'
 require 'lamp/logger'
 require 'lamp/support'
-# require 'lamp/actions'
 
 module Lamp
   class << self
 
-    attr_reader :logger
+    attr_reader :logger, :root
 
     # @option opts [String] log-file  ({Lamp::LOG_FILE})
     # @option opts [String] log-level ({Lamp::LOG_LEVEL})
@@ -24,10 +23,16 @@ module Lamp
      @logger.info "Lamp v#{VERSION}"
     end
 
+    # @option opts [String] path to root
+    def reset_root(opts={})
+      @root = opts['root'] || ROOT
+    end
+
     # Starts a RPC server. See {Lamp::Server} for options.
     def server(opts={})
-      require 'lamp/server'
+      reset_root   opts
       reset_logger opts
+      require 'lamp/server'
       Server.new(opts).serve.value
     rescue Interrupt
       logger.info 'Extinguished.'
@@ -59,27 +64,3 @@ module Lamp
   end
 
 end
-
-  # include Actions
-  # extend self
-
-  # Loads configuration options from +file+. This is not thread-safe, and
-  # should only be called at the beginning.
-  # @param [String, Hash] arg          path to configuration file, or hash
-  #                                    containing options
-  # @return [void]
-  # def configure!(arg=CONFIG_FILE)
-  #   case arg
-  #   when String
-  #     check_file     arg
-  #     settings.load! arg
-  #   else settings.load! arg
-  #   end
-  #   reset_logger
-  #   Lesson.prepare_directories
-  # end
-
-
-# end
-
-# require 'lamp/lesson'

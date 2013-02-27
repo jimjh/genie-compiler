@@ -1,4 +1,7 @@
 # ~*~ encoding: utf-8 ~*~
+require 'lamp/actions'
+require 'lamp/lesson'
+
 module Lamp
 
   # Provides implementation for the RPC interface. Refer to `lamp.thrift` for
@@ -9,6 +12,7 @@ module Lamp
 
     def initialize
       @started = Time.now
+      Lesson.prepare_directories
     end
 
     # @return [String] 'pong!'

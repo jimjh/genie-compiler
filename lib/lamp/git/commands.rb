@@ -1,9 +1,11 @@
 # ~*~ encoding: utf-8 ~*~
 require 'open3'
+require 'lamp/actions'
 
 module Lamp
 
   module Git
+
     extend self
     extend Actions
 
