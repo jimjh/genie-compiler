@@ -6,6 +6,13 @@
 
 require 'thrift'
 
+module LampCode
+  SUCCESS = 0
+  FAILURE = 1
+  VALUE_MAP = {0 => "SUCCESS", 1 => "FAILURE"}
+  VALID_VALUES = Set.new([SUCCESS, FAILURE]).freeze
+end
+
 class LampInfo
   include ::Thrift::Struct, ::Thrift::Struct_Union
   UPTIME = 1
@@ -19,6 +26,27 @@ class LampInfo
   def struct_fields; FIELDS; end
 
   def validate
+  end
+
+  ::Thrift::Struct.generate_accessors self
+end
+
+class LampStatus
+  include ::Thrift::Struct, ::Thrift::Struct_Union
+  CODE = 1
+  TRACE = 2
+
+  FIELDS = {
+    CODE => {:type => ::Thrift::Types::I32, :name => 'code', :enum_class => ::LampCode},
+    TRACE => {:type => ::Thrift::Types::LIST, :name => 'trace', :element => {:type => ::Thrift::Types::STRING}}
+  }
+
+  def struct_fields; FIELDS; end
+
+  def validate
+    unless @code.nil? || ::LampCode::VALID_VALUES.include?(@code)
+      raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Invalid value of field code!')
+    end
   end
 
   ::Thrift::Struct.generate_accessors self

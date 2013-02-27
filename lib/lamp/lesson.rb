@@ -15,8 +15,7 @@ require 'lamp/lesson/remove'
 module Lamp
 
   # A lesson begins as a git repository and ends as a set of compiled html
-  # files. Note that +name+ is assumed to be safe (w.r.t. directory traversal
-  # attacks.)
+  # files.
   class Lesson
 
     extend Actions

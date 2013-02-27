@@ -44,8 +44,8 @@ module Lamp
     # @param [Array]  argv      parameters for command
     # @return [void]
     def client(cmd=nil, argv=[], opts={})
-      require 'lamp/client'
       reset_logger opts
+      require 'lamp/client'
       client = Client.new(opts)
       results = invoke client, cmd, argv
       logger.info "Response: #{results.inspect}"

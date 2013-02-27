@@ -41,6 +41,21 @@ module Lamp
       raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'info failed: unknown result')
     end
 
+    def create(git_url, lesson_path, callback, options)
+      send_create(git_url, lesson_path, callback, options)
+      return recv_create()
+    end
+
+    def send_create(git_url, lesson_path, callback, options)
+      send_message('create', Create_args, :git_url => git_url, :lesson_path => lesson_path, :callback => callback, :options => options)
+    end
+
+    def recv_create()
+      result = receive_message(Create_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'create failed: unknown result')
+    end
+
   end
 
   class Processor
@@ -58,6 +73,13 @@ module Lamp
       result = Info_result.new()
       result.success = @handler.info()
       write_result(result, oprot, 'info', seqid)
+    end
+
+    def process_create(seqid, iprot, oprot)
+      args = read_args(iprot, Create_args)
+      result = Create_result.new()
+      result.success = @handler.create(args.git_url, args.lesson_path, args.callback, args.options)
+      write_result(result, oprot, 'create', seqid)
     end
 
   end
@@ -116,6 +138,44 @@ module Lamp
 
     FIELDS = {
       SUCCESS => {:type => ::Thrift::Types::STRUCT, :name => 'success', :class => ::LampInfo}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Create_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    GIT_URL = 1
+    LESSON_PATH = 2
+    CALLBACK = 3
+    OPTIONS = 4
+
+    FIELDS = {
+      GIT_URL => {:type => ::Thrift::Types::STRING, :name => 'git_url'},
+      LESSON_PATH => {:type => ::Thrift::Types::STRING, :name => 'lesson_path'},
+      CALLBACK => {:type => ::Thrift::Types::STRING, :name => 'callback'},
+      OPTIONS => {:type => ::Thrift::Types::MAP, :name => 'options', :key => {:type => ::Thrift::Types::STRING}, :value => {:type => ::Thrift::Types::STRING}}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Create_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::STRUCT, :name => 'success', :class => ::LampStatus}
     }
 
     def struct_fields; FIELDS; end
