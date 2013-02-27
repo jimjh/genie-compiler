@@ -1,6 +1,7 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper'
 require 'timeout'
+require 'lamp/lesson'
 
 describe Lamp::Lesson do
 

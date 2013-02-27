@@ -1,5 +1,4 @@
 # ~*~ encoding: utf-8 ~*~
-require 'lamp/support/settings'
 require 'lamp/support/spirit_ext/problem'
 
 module Lamp

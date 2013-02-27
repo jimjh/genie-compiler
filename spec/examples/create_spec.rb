@@ -1,5 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper.rb'
+require 'lamp/lesson'
 
 describe Lamp::Lesson do
 

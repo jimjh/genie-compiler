@@ -30,10 +30,10 @@ module Lamp
     # attacks in +@manifest[:static_paths]+.
     # @return [Pathname] path to compiled lesson
     def compile
-      directory compiled_path, force: true, mode: PERMISSIONS[:public_dir]
-      directory solution_path, force: true
+      Actions.directory compiled_path, force: true, mode: PERMISSIONS[:public_dir]
+      Actions.directory solution_path, force: true
       sources = [Spirit::MANIFEST] + static_paths
-      copy_secure source_path, compiled_path, sources,
+      Actions.copy_secure source_path, compiled_path, sources,
         file_mode: PERMISSIONS[:public_file],
         dir_mode:  PERMISSIONS[:public_dir]
       Pathname.glob(source_path+GLOB).each { |path| render path, compiled_path }
@@ -49,7 +49,7 @@ module Lamp
     # @return [Fixnum] number of bytes written
     def render(source, destination)
       html = File.open(source, 'r:utf-8') { |f| Spirit::Document.new(f, name: name).render }
-      write_file destination + source.basename.sub_ext(EXT),
+      Actions.write_file destination + source.basename.sub_ext(EXT),
         html, 'w+',
         PERMISSIONS[:public_file]
     end
