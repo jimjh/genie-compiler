@@ -1,7 +1,7 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper'
 require 'securerandom'
-require 'lamp/client'
+require 'lamp/thrift/client'
 
 describe Lamp do
 

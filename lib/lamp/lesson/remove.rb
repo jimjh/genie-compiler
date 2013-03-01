@@ -10,10 +10,10 @@ module Lamp
     # @return [Void]
     def self.rm(name)
       ensure_safe_name name
-      path = source_path name
       lock = obtain_lock name
-      lesson = new Grit::Repo.new(path), name
-      lesson.rm
+      [:source_path, :compiled_path, :solution_path].each do |method|
+        remove public_send(method, name)
+      end
     ensure
       release_lock lock unless lock.nil?
     end
@@ -21,7 +21,7 @@ module Lamp
     # Removes the source and compiled directories of this lesson, if they
     # exist.
     def rm
-      [source_path, compiled_path, solution_path].each { |p| Actions.remove p }
+      Lesson.rm name
     end
 
   end

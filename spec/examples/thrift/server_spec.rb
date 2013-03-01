@@ -1,6 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
 require 'spec_helper'
-require 'lamp/server'
+require 'lamp/thrift/server'
 
 describe Lamp do
 

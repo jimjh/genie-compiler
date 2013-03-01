@@ -30,4 +30,6 @@ service Lamp {
                     2: string lesson_path,
                     3: string callback,
                     4: map<string, string> options)
+  LampStatus remove(1: string lesson_path,
+                    2: string callback)
 }
