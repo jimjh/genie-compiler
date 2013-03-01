@@ -2,4 +2,4 @@
 
 gen = Pathname.new(__FILE__).dirname + '..' + '..' + '..' + 'gen'
 $:.push gen
-require gen + 'lamp'
+require gen + 'r_p_c'

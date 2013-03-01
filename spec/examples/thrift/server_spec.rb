@@ -7,7 +7,7 @@ describe Lamp do
   describe '::server' do
 
     it 'rescues from Interrupt' do
-      Lamp::Server.any_instance.expects(:serve).raises(Interrupt)
+      Lamp::RPC::Server.any_instance.expects(:serve).raises(Interrupt)
       expect { Lamp.server }.to_not raise_exception
       output.should match(/Extinguished\./)
     end
@@ -16,25 +16,25 @@ describe Lamp do
 
 end
 
-describe Lamp::Server do
+describe Lamp::RPC::Server do
 
   describe '#initialize' do
 
     let(:rand_port) { Random.rand 1000 }
 
     it 'sets the port number' do
-      Lamp::Server.new('port' => rand_port).port.should be(rand_port)
+      Lamp::RPC::Server.new('port' => rand_port).port.should be(rand_port)
     end
 
     it 'sets the port number to default value' do
-      Lamp::Server.new.port.should be_zero
+      Lamp::RPC::Server.new.port.should be_zero
     end
 
   end
 
   describe '#serve' do
 
-    let(:server) { Lamp::Server.new }
+    let(:server) { Lamp::RPC::Server.new }
 
     context 'running server' do
 

@@ -3,37 +3,41 @@ require 'lamp/thrift/gen'
 
 module Lamp
 
-  # Contains, configures, and controls the Thrift RPC client.
-  #
-  # @example Ping Pong
-  #     client.transport.open
-  #     client.ping # => 'pong!'
-  #     client.transport.close
-  #
-  # @note This is patched into the generated client class.
-  class Client
+  module RPC
 
-    attr_reader :host, :port, :transport
+    # Contains, configures, and controls the Thrift RPC client.
+    #
+    # @example Ping Pong
+    #     client.transport.open
+    #     client.ping # => 'pong!'
+    #     client.transport.close
+    #
+    # @note This is patched into the generated client class.
+    class Client
 
-    # @option opts [String] host ('::1')       host
-    # @option opts [String] port               port number (required)
-    def initialize(opts={})
-      @host = opts['host'] || HOST
-      @port = opts['port'] || raise(ArgumentError, ':port is a required option')
-      socket     = Thrift::Socket.new host, port
-      @transport = Thrift::BufferedTransport.new socket
-      protocol   = Thrift::BinaryProtocol.new @transport
-      super protocol
-    end
+      attr_reader :host, :port, :transport
 
-    # Invokes given block within an open transport.
-    def invoke(&block)
-      @transport.open
-      instance_eval(&block)
-    rescue => e
-      Lamp.logger.error e.message
-    ensure
-      @transport.close
+      # @option opts [String] host ('::1')       host
+      # @option opts [String] port               port number (required)
+      def initialize(opts={})
+        @host = opts['host'] || HOST
+        @port = opts['port'] || raise(ArgumentError, ':port is a required option')
+        socket     = Thrift::Socket.new host, port
+        @transport = Thrift::BufferedTransport.new socket
+        protocol   = Thrift::BinaryProtocol.new @transport
+        super protocol
+      end
+
+      # Invokes given block within an open transport.
+      def invoke(&block)
+        @transport.open
+        instance_eval(&block)
+      rescue => e
+        Lamp.logger.error e.message
+      ensure
+        @transport.close
+      end
+
     end
 
   end

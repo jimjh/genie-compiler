@@ -7,3 +7,5 @@
 require 'thrift'
 require 'lamp_types'
 
+module Lamp
+end

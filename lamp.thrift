@@ -5,31 +5,24 @@
 # generate the ruby files.
 # Jim Lim <jiunnhal@cmu.edu>
 
+namespace rb Lamp
+
 # server information
-struct LampInfo {
+struct Info {
   1: double           uptime,     # in seconds
   2: map<string, i32> threads     # { 'total' => xx, 'running' => xx }
 }
 
-# request status code
-enum LampCode {
-  SUCCESS,
-  FAILURE
+exception RPCError {
 }
 
-# request status
-struct LampStatus {
-  1: LampCode     code,
-  2: list<string> trace
-}
-
-service Lamp {
-  string     ping()
-  LampInfo   info()
-  LampStatus create(1: string git_url,
-                    2: string lesson_path,
-                    3: string callback,
-                    4: map<string, string> options)
-  LampStatus remove(1: string lesson_path,
-                    2: string callback)
+service RPC {
+  string ping()
+  Info   info()
+  void create(1: string git_url,
+              2: string lesson_path,
+              3: string callback,
+              4: map<string, string> options) throws (1:RPCError e)
+  void remove(1: string lesson_path,
+              2: string callback)
 }

@@ -33,7 +33,7 @@ module Lamp
       reset_root   opts
       reset_logger opts
       require 'lamp/thrift/server'
-      Server.new(opts).serve.value
+      RPC::Server.new(opts).serve.value
     rescue Interrupt
       logger.info 'Extinguished.'
     end
@@ -46,7 +46,7 @@ module Lamp
     def client(cmd=nil, argv=[], opts={})
       reset_logger opts
       require 'lamp/thrift/client'
-      client = Client.new(opts)
+      client = RPC::Client.new(opts)
       results = invoke client, cmd, argv
       logger.info "Response: #{results.inspect}"
     end
