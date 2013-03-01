@@ -1,10 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
-
-# Import the generated ruby code.
-gen = Pathname.new(__FILE__).dirname + '..' + '..' + 'gen'
-$:.push gen
-require gen + 'lamp'
-require 'lamp/handler'
+require 'lamp/thrift/gen'
+require 'lamp/thrift/handler'
 
 module Lamp
 

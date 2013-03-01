@@ -32,7 +32,7 @@ module Lamp
     def server(opts={})
       reset_root   opts
       reset_logger opts
-      require 'lamp/server'
+      require 'lamp/thrift/server'
       Server.new(opts).serve.value
     rescue Interrupt
       logger.info 'Extinguished.'
@@ -45,7 +45,7 @@ module Lamp
     # @return [void]
     def client(cmd=nil, argv=[], opts={})
       reset_logger opts
-      require 'lamp/client'
+      require 'lamp/thrift/client'
       client = Client.new(opts)
       results = invoke client, cmd, argv
       logger.info "Response: #{results.inspect}"

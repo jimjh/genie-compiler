@@ -56,6 +56,21 @@ module Lamp
       raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'create failed: unknown result')
     end
 
+    def remove(lesson_path, callback)
+      send_remove(lesson_path, callback)
+      return recv_remove()
+    end
+
+    def send_remove(lesson_path, callback)
+      send_message('remove', Remove_args, :lesson_path => lesson_path, :callback => callback)
+    end
+
+    def recv_remove()
+      result = receive_message(Remove_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'remove failed: unknown result')
+    end
+
   end
 
   class Processor
@@ -80,6 +95,13 @@ module Lamp
       result = Create_result.new()
       result.success = @handler.create(args.git_url, args.lesson_path, args.callback, args.options)
       write_result(result, oprot, 'create', seqid)
+    end
+
+    def process_remove(seqid, iprot, oprot)
+      args = read_args(iprot, Remove_args)
+      result = Remove_result.new()
+      result.success = @handler.remove(args.lesson_path, args.callback)
+      write_result(result, oprot, 'remove', seqid)
     end
 
   end
@@ -171,6 +193,40 @@ module Lamp
   end
 
   class Create_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::STRUCT, :name => 'success', :class => ::LampStatus}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Remove_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    LESSON_PATH = 1
+    CALLBACK = 2
+
+    FIELDS = {
+      LESSON_PATH => {:type => ::Thrift::Types::STRING, :name => 'lesson_path'},
+      CALLBACK => {:type => ::Thrift::Types::STRING, :name => 'callback'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Remove_result
     include ::Thrift::Struct, ::Thrift::Struct_Union
     SUCCESS = 0
 
