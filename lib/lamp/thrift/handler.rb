@@ -40,6 +40,18 @@ module Lamp
       LampStatus.new code: LampCode::FAILURE, trace: trace
     end
 
+    # @return [LampStatus] status of request
+    def remove(lesson_path, callback)
+      log_invocation
+      trace = []
+      validate_remove lesson_path, trace
+      async_remove    lesson_path, URI(callback)
+      LampStatus.new code: LampCode::SUCCESS, trace: trace
+    rescue => e
+      trace << 'Request failed: %s' % e.message
+      LampStatus.new code: LampCode::FAILURE, trace: trace
+    end
+
     private
 
     # @return [Hash] number of threads (+'total'+ and +'running'+)
@@ -83,7 +95,27 @@ module Lamp
         begin
           Lamp::Lesson.create git_url, lesson_path, opts
           Net::HTTP.post_form(callback, { x: 'y' })
-          Lamp.logger.debug 'cb  <- ' + lesson_path
+          Lamp.logger.debug 'create.cb  <- ' + lesson_path
+        rescue => e
+          Lamp.logger.error e
+        end
+      end
+    end
+
+    # Validates the parameters passed to rm
+    def validate_remove(lesson_path, trace)
+      unless validate_presence_of 'lesson_path', lesson_path, trace
+        raise Error, 'Validation failed.'
+      end
+    end
+
+    # Invokes `rm` on a separate thread.
+    def async_remove(lesson_path, callback)
+      Thread.new do
+        begin
+          Lamp::Lesson.rm lesson_path
+          Net::HTTP.post_form(callback, { x: 'y' })
+          Lamp.logger.debug 'rm.cb  <- ' + lesson_path
         rescue => e
           Lamp.logger.error e
         end

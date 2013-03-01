@@ -35,8 +35,8 @@ describe Lamp::Lesson do
 
       end
 
-      it 'raises an error if the specified lesson does not exist' do
-        expect { Lamp::Lesson::rm 'x' }.to raise_error
+      it 'does not raises an error if the specified lesson does not exist' do
+        expect { Lamp::Lesson::rm 'x' }.to_not raise_error
       end
 
       it 'does not raise an error if the specified lesson exists' do
