@@ -102,7 +102,7 @@ module Lamp
       def async_create(git_url, lesson_path, callback, opts)
         async do
           Lamp::Lesson.create git_url, lesson_path, opts
-          Net::HTTP.post_form(callback, { x: 'y' })
+          Net::HTTP.post_form(callback, { payload: '{}' })
           Lamp.logger.debug 'create.cb  <- ' + lesson_path
         end
       end
@@ -121,7 +121,7 @@ module Lamp
       def async_remove(lesson_path, callback)
         async do
           Lamp::Lesson.rm lesson_path
-          Net::HTTP.post_form(callback, { x: 'y' })
+          Net::HTTP.post_form(callback, { payload: '{}' })
           Lamp.logger.debug 'rm.cb  <- ' + lesson_path
         end
       end
