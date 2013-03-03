@@ -24,5 +24,5 @@ service RPC {
               3: string callback,
               4: map<string, string> options) throws (1:RPCError e)
   void remove(1: string lesson_path,
-              2: string callback)
+              2: string callback) throws (1:RPCError e)
 }

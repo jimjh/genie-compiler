@@ -68,6 +68,7 @@ module Lamp
 
       def recv_remove()
         result = receive_message(Remove_result)
+        raise result.e unless result.e.nil?
         return
       end
 
@@ -104,7 +105,11 @@ module Lamp
       def process_remove(seqid, iprot, oprot)
         args = read_args(iprot, Remove_args)
         result = Remove_result.new()
-        @handler.remove(args.lesson_path, args.callback)
+        begin
+          @handler.remove(args.lesson_path, args.callback)
+        rescue ::Lamp::RPCError => e
+          result.e = e
+        end
         write_result(result, oprot, 'remove', seqid)
       end
 
@@ -232,9 +237,10 @@ module Lamp
 
     class Remove_result
       include ::Thrift::Struct, ::Thrift::Struct_Union
+      E = 1
 
       FIELDS = {
-
+        E => {:type => ::Thrift::Types::STRUCT, :name => 'e', :class => ::Lamp::RPCError}
       }
 
       def struct_fields; FIELDS; end

@@ -43,7 +43,7 @@ module Lamp
       # @return [LampStatus] status of request
       def remove(lesson_path, callback)
         log_invocation
-        validate_remove lesson_path
+        validate_remove lesson_path, callback
         async_remove    lesson_path, URI(callback)
       rescue => e
         Lamp.logger.error e
@@ -70,21 +70,32 @@ module Lamp
         end
       end
 
+      def validate_presence_of(*args)
+        case args.first
+        when Hash
+          pairs, trace = *args
+          pairs.map { |pair| validate_presence_of(*pair, trace) }
+        else
+          key, value, trace = *args
+          trace << "#{key} must not be blank" if value.blank?
+        end
+      end
+
+      def validate_uri_format_of(value, trace)
+        unless [URI::HTTP, URI::HTTPS].include? URI(value).class
+          trace << "callback must be a valid http(s) URI"
+        end
+      end
+
       # Validates the parameters passed to create
       def validate_create(git_url, lesson_path, callback)
         trace = []
-        valid = { 'git_url' => git_url,
-                  'lesson_path' => lesson_path,
-                  'callback' => callback }.map do |pair|
-          validate_presence_of(*pair, trace)
-        end.reduce(:&)
-        raise RPCError, 'Validation failed: ' + trace.join('; ') unless valid
-      end
-
-      def validate_presence_of(key, value, trace)
-        return true unless value.blank?
-        trace << "#{key} must not be blank"
-        false
+        validate_presence_of(
+          { 'git_url' => git_url,
+            'lesson_path' => lesson_path,
+            'callback' => callback}, trace)
+        validate_uri_format_of callback, trace
+        raise RPCError, 'Validation failed: '+trace.join('; ') unless trace.empty?
       end
 
       # Invokes `create` on a separate thread.
@@ -97,10 +108,13 @@ module Lamp
       end
 
       # Validates the parameters passed to rm
-      def validate_remove(lesson_path)
+      def validate_remove(lesson_path, callback)
         trace = []
-        valid = validate_presence_of 'lesson_path', lesson_path, trace
-        raise RPCError, 'Validation failed: ' + trace.join('; ') unless valid
+        validate_presence_of(
+          { 'lesson_path' => lesson_path,
+            'callback' => callback }, trace)
+        validate_uri_format_of callback, trace
+        raise RPCError, 'Validation failed: '+trace.join('; ') unless trace.empty?
       end
 
       # Invokes `rm` on a separate thread.
