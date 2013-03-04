@@ -1,5 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
-require 'lamp/thrift/gen'
+require 'lamp/rpc/gen'
+require 'lamp/config'
 
 module Lamp
 
@@ -21,7 +22,7 @@ module Lamp
       # @option opts [String] port               port number (required)
       def initialize(opts={})
         @host = opts['host'] || HOST
-        @port = opts['port'] || raise(ArgumentError, ':port is a required option')
+        @port = opts['port'] || raise(ArgumentError, %{'port' is a required option})
         socket     = Thrift::Socket.new host, port
         @transport = Thrift::BufferedTransport.new socket
         protocol   = Thrift::BinaryProtocol.new @transport
@@ -33,7 +34,7 @@ module Lamp
         @transport.open
         instance_eval(&block)
       rescue => e
-        Lamp.logger.error e.message
+        Lamp.logger.error e.message if Lamp.logger
       ensure
         @transport.close
       end

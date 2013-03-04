@@ -101,8 +101,9 @@ module Lamp
       # Invokes `create` on a separate thread.
       def async_create(git_url, lesson_path, callback, opts)
         async do
-          Lamp::Lesson.create git_url, lesson_path, opts
-          Net::HTTP.post_form(callback, { payload: '{}' })
+          lesson  = Lamp::Lesson.create git_url, lesson_path, opts
+          payload = lesson.public_paths.to_json
+          Net::HTTP.post_form(callback, { payload: payload })
           Lamp.logger.debug 'create.cb  <- ' + lesson_path
         end
       end

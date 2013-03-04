@@ -2,8 +2,8 @@
 require 'spec_helper'
 require 'shared/validation_matcher'
 
-require 'lamp/thrift/gen'
-require 'lamp/thrift/handler'
+require 'lamp/rpc/gen'
+require 'lamp/rpc/handler'
 
 describe Lamp::RPC::Handler, :focus do
 

@@ -83,6 +83,11 @@ module Lamp
       @manifest = Spirit::Manifest.load_file manifest_file
     end
 
+    def public_paths
+      { compiled_path: compiled_path,
+        solution_path: solution_path }
+    end
+
     private
 
     path_reader :source, :compiled, :solution

@@ -1,6 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
-require 'lamp/thrift/gen'
-require 'lamp/thrift/handler'
+require 'lamp/rpc/gen'
+require 'lamp/rpc/handler'
 
 module Lamp
 
