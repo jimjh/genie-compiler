@@ -101,10 +101,16 @@ module Lamp
       # Invokes `create` on a separate thread.
       def async_create(git_url, lesson_path, callback, opts)
         async do
-          lesson  = Lamp::Lesson.create git_url, lesson_path, opts
-          payload = lesson.public_paths.to_json
-          Net::HTTP.post_form(callback, { payload: payload })
-          Lamp.logger.debug 'create.cb  <- ' + lesson_path
+          begin
+            lesson  = Lamp::Lesson.create git_url, lesson_path, opts
+            payload = lesson.public_paths.to_json
+          rescue Error => e
+            Net::HTTP.post_form(callback, { status: 403, message: e.message })
+            Lamp.logger.debug 'create.cb  <x ' + lesson_path
+          else
+            Net::HTTP.post_form(callback, { status: 200, payload: payload })
+            Lamp.logger.debug 'create.cb  <- ' + lesson_path
+          end
         end
       end
 
@@ -121,9 +127,15 @@ module Lamp
       # Invokes `rm` on a separate thread.
       def async_remove(lesson_path, callback)
         async do
-          Lamp::Lesson.rm lesson_path
-          Net::HTTP.post_form(callback, { payload: '{}' })
-          Lamp.logger.debug 'rm.cb  <- ' + lesson_path
+          begin
+            Lamp::Lesson.rm lesson_path
+          rescue Error => e
+            Net::HTTP.post_form(callback, { status: 403, message: e.message })
+            Lamp.logger.debug 'rm.cb  <x ' + lesson_path
+          else
+            Net::HTTP.post_form(callback, { status: 200, payload: '{}' })
+            Lamp.logger.debug 'rm.cb  <- ' + lesson_path
+          end
         end
       end
 
