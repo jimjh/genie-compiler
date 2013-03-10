@@ -36,6 +36,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'yard',         '~> 0.8.3'
   gem.add_development_dependency 'debugger-pry', '~> 0.1.1'
   gem.add_development_dependency 'rspec',        '~> 2.12.0'
+  gem.add_development_dependency 'fuubar',       '~> 1.1.0'
   gem.add_development_dependency 'rake',         '~> 10.0.0'
 
 end
