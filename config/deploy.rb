@@ -56,7 +56,7 @@ namespace :deploy do
     with_user('codex') { run 'sudo service lamp stop' }
   end
 
-  task :restart do
+  task :restart, :roles => :app, :except => { :no_release => true } do
     with_user('codex') { run 'sudo service lamp restart' }
   end
 
