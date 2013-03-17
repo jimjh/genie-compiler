@@ -20,7 +20,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = %w[lib]
   gem.files         = %w[LICENSE README.md] +
                       Dir.glob('lib/**/*') +
-                      Dir.glob('bin/**/*')
+                      Dir.glob('bin/**/*') +
+                      Dir.glob('gen/**/*')
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
 
