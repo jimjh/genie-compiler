@@ -34,7 +34,7 @@ module Lamp
       def create(git_url, lesson_path, callback, opts)
         log_invocation
         validate_create git_url, lesson_path, callback
-        async_create    git_url, lesson_path, URI(callback), opts
+        async_create    git_url, lesson_path, callback, opts
       rescue => e
         Lamp.logger.error e
         raise e
@@ -44,7 +44,7 @@ module Lamp
       def remove(lesson_path, callback)
         log_invocation
         validate_remove lesson_path, callback
-        async_remove    lesson_path, URI(callback)
+        async_remove    lesson_path, callback
       rescue => e
         Lamp.logger.error e
         raise e
@@ -100,15 +100,15 @@ module Lamp
 
       # Invokes `create` on a separate thread.
       def async_create(git_url, lesson_path, callback, opts)
-        async do
+        async(callback) do |url|
           begin
             lesson  = Lamp::Lesson.create git_url, lesson_path, opts
             payload = lesson.public_paths.to_json
           rescue Error => e
-            Net::HTTP.post_form(callback, { status: 403, message: e.message })
+            Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
             Lamp.logger.debug 'create.cb  <x ' + lesson_path
           else
-            Net::HTTP.post_form(callback, { status: 200, payload: payload })
+            Net::HTTP.post_form(URI(url), { status: 200, payload: payload })
             Lamp.logger.debug 'create.cb  <- ' + lesson_path
           end
         end
@@ -126,23 +126,23 @@ module Lamp
 
       # Invokes `rm` on a separate thread.
       def async_remove(lesson_path, callback)
-        async do
+        async(callback) do |url|
           begin
             Lamp::Lesson.rm lesson_path
           rescue Error => e
-            Net::HTTP.post_form(callback, { status: 403, message: e.message })
+            Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
             Lamp.logger.debug 'rm.cb  <x ' + lesson_path
           else
-            Net::HTTP.post_form(callback, { status: 200, payload: '{}' })
+            Net::HTTP.post_form(URI(url), { status: 200, payload: '{}' })
             Lamp.logger.debug 'rm.cb  <- ' + lesson_path
           end
         end
       end
 
-      def async
+      def async(*args)
         Thread.new do
           begin
-            yield
+            yield *args
           rescue => e
             Lamp.logger.error e
           end
