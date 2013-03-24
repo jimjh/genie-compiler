@@ -26,18 +26,18 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
 
   # DEPENDENCIES
-  gem.add_dependency 'thrift',        '~> 0.9.0'
-  gem.add_dependency 'thor',          '~> 0.16.0'
-  gem.add_dependency 'activesupport', '~> 3.2.9'
-  gem.add_dependency 'grit',          '~> 2.5.0'
-  gem.add_dependency 'pry',           '~> 0.9.11'
+  gem.add_dependency 'thrift',        '~> 0.9'
+  gem.add_dependency 'thor',          '~> 0.16'
+  gem.add_dependency 'activesupport', '~> 3.2'
+  gem.add_dependency 'grit',          '~> 2.5'
+  gem.add_dependency 'pry',           '~> 0.9'
   gem.add_dependency 'spirit'
 
-  gem.add_development_dependency 'mocha',        '~> 0.10.5'
-  gem.add_development_dependency 'yard',         '~> 0.8.3'
-  gem.add_development_dependency 'debugger-pry', '~> 0.1.1'
-  gem.add_development_dependency 'rspec',        '~> 2.12.0'
-  gem.add_development_dependency 'fuubar',       '~> 1.1.0'
-  gem.add_development_dependency 'rake',         '~> 10.0.0'
+  gem.add_development_dependency 'mocha',        '~> 0.10'
+  gem.add_development_dependency 'yard',         '~> 0.8'
+  gem.add_development_dependency 'debugger-pry', '~> 0.1'
+  gem.add_development_dependency 'rspec',        '~> 2.12'
+  gem.add_development_dependency 'fuubar',       '~> 1.1'
+  gem.add_development_dependency 'rake',         '~> 10.0'
 
 end
