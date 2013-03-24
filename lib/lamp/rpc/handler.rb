@@ -65,9 +65,19 @@ module Lamp
 
       # Logs the caller of this method.
       def log_invocation
-        if Lamp.logger.debug?
-          Lamp.logger.debug 'rpc -> ' + caller[0][/`([^']*)'/, 1]
-        end
+        Lamp.logger.debug { 'rpc -> ' + log_caller(4) }
+      end
+
+      def log_success(*args)
+        Lamp.logger.debug { log_caller(5) + ' -> ' + args.join }
+      end
+
+      def log_failure
+        Lamp.logger.warn { log_caller(5) + ' x> ' + args.join }
+      end
+
+      def log_caller(nested)
+        caller[nested][/`.*'/][1..-2].split.last
       end
 
       def validate_presence_of(*args)
@@ -103,13 +113,12 @@ module Lamp
         async(callback) do |url|
           begin
             lesson  = Lamp::Lesson.create git_url, lesson_path, opts
-            payload = lesson.public_paths.to_json
+            payload = lesson.public_paths.dup
+            payload[:problems] = lesson.problems
           rescue Error => e
-            Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
-            Lamp.logger.debug 'create.cb  <x ' + lesson_path
+            post_failure lesson_path, url, e
           else
-            Net::HTTP.post_form(URI(url), { status: 200, payload: payload })
-            Lamp.logger.debug 'create.cb  <- ' + lesson_path
+            post_success lesson_path, url, payload
           end
         end
       end
@@ -130,23 +139,30 @@ module Lamp
           begin
             Lamp::Lesson.rm lesson_path
           rescue Error => e
-            Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
-            Lamp.logger.debug 'rm.cb  <x ' + lesson_path
+            post_failure lesson_path, url, e
           else
-            Net::HTTP.post_form(URI(url), { status: 200, payload: '{}' })
-            Lamp.logger.debug 'rm.cb  <- ' + lesson_path
+            post_success lesson_path, url, {}
           end
         end
       end
 
       def async(*args)
         Thread.new do
-          begin
-            yield *args
+          begin yield(*args)
           rescue => e
             Lamp.logger.error e
           end
         end
+      end
+
+      def post_success(lesson_path, url, payload)
+        Net::HTTP.post_form(URI(url), { status: 200, payload: payload })
+        log_success lesson_path
+      end
+
+      def post_failure(lesson_path, url, e)
+        Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
+        log_failure lesson_path
       end
 
     end
