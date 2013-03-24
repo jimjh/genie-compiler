@@ -7,7 +7,6 @@ require 'lamp/version'
 require 'lamp/config'
 require 'lamp/errors'
 require 'lamp/logger'
-require 'lamp/support'
 
 module Lamp
   class << self

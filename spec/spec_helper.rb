@@ -1,8 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
 require 'rubygems'
 require 'bundler/setup'
-require 'tmpdir'
-require 'rspec'
 
 begin Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -11,13 +9,16 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
+require 'tmpdir'
+require 'stringio'
+require 'rspec'
+
 module Test
   ROOT   = Pathname.new File.dirname(__FILE__)
-  OUTPUT = StringIO.new
+  OUTPUT = ::StringIO.new
 end
 
 $:.unshift Test::ROOT + '..' + 'lib'
-
 require 'shared/global_context'
 require 'shared/repo_context'
 require 'shared/file_helpers'
