@@ -48,9 +48,11 @@ module Lamp
     # @param [Pathname] destination       path to output directory
     # @return [Fixnum] number of bytes written
     def render(source, destination)
-      html = File.open(source, 'r:utf-8') { |f| Spirit::Document.new(f).render }
+      problems = []
+      html = File.open(source, 'r:utf-8') { |f| Spirit::Document.new(f, problems: problems).render }
       Actions.write_file destination + source.basename.sub_ext(EXT),
         html, 'w+', PERMISSIONS[:public_file]
+      Lamp.logger.record :ignore, problems.to_s
     end
 
   end
