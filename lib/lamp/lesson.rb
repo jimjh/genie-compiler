@@ -68,7 +68,7 @@ module Lamp
 
     end
 
-    attr_reader :repo, :name
+    attr_reader :repo, :name, :problems
 
     # Creates a new lesson from the given repo and name.
     # @param [Grit::Repo] repo          git repository
@@ -76,7 +76,7 @@ module Lamp
     # @raise [InvalidLessonError] if the repository doesn't contain a valid
     #   manifest and index file.
     def initialize(repo, name)
-      @repo, @name = repo, name
+      @repo, @name, @problems = repo, name, []
       manifest_file = File.expand_path Spirit::MANIFEST, repo.working_dir
       Actions.check_file manifest_file
       Actions.check_file File.expand_path(Spirit::INDEX, repo.working_dir)
