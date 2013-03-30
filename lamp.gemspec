@@ -31,6 +31,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'activesupport', '~> 3.2'
   gem.add_dependency 'grit',          '~> 2.5'
   gem.add_dependency 'pry',           '~> 0.9'
+  gem.add_dependency 'faraday',       '~> 0.8'
   gem.add_dependency 'spirit'
 
   gem.add_development_dependency 'mocha',        '~> 0.10'

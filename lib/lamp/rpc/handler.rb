@@ -1,5 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
 require 'active_support/core_ext/object/blank'
+require 'faraday'
 require 'lamp/actions'
 require 'lamp/lesson'
 
@@ -156,12 +157,14 @@ module Lamp
       end
 
       def post_success(lesson_path, url, payload)
-        Net::HTTP.post_form(URI(url), { status: 200, payload: payload })
+        # Net::HTTP.post_form(URI(url), { status: 200, payload: payload })
+        Faraday.post url, { status: 200, payload: payload }
         log_success lesson_path
       end
 
       def post_failure(lesson_path, url, e)
-        Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
+        # Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
+        Faraday.post url, { status: 403, message: e.message }
         log_failure lesson_path
       end
 

@@ -40,14 +40,14 @@ describe Lamp::RPC::Handler do
     it { should validate_uri_format_of(2, 'callback').on(:create).with(args)  }
 
     it 'fires the callback with status=200 on success' do
-      Net::HTTP.expects(:post_form).once
-        .with(URI(callback), has_entry(:status, 200) & has_key(:payload))
+      Faraday.expects(:post).once
+        .with(callback, has_entry(:status, 200) & has_key(:payload))
       subject.create(*args).join
     end
 
     it 'fires the callback with status=403 on failure' do
-      Net::HTTP.expects(:post_form).once
-        .with(URI(callback), has_entry(:status, 403) & has_key(:message))
+      Faraday.expects(:post).once
+        .with(callback, has_entry(:status, 403) & has_key(:message))
       Lamp::Lesson.expects(:create).raises(Lamp::Error)
       subject.create(*args).join
     end
@@ -70,15 +70,15 @@ describe Lamp::RPC::Handler do
       before(:each) { Lamp::Lesson.clone_from url, name }
 
       it 'fires the callback with status=200 on success' do
-        Net::HTTP.expects(:post_form).once
-          .with(URI(callback), has_entry(:status, 200) & has_key(:payload))
+        Faraday.expects(:post).once
+          .with(callback, has_entry(:status, 200) & has_key(:payload))
         subject.remove(*args).join
       end
 
       it 'fires the callback with status=403 on failure' do
         Lamp::Lesson.expects(:rm).raises(Lamp::Error)
-        Net::HTTP.expects(:post_form).once
-          .with(URI(callback), has_entry(:status, 403) & has_key(:message))
+        Faraday.expects(:post).once
+          .with(callback, has_entry(:status, 403) & has_key(:message))
         subject.remove(*args).join
       end
 
