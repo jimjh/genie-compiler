@@ -115,7 +115,10 @@ module Lamp
           begin
             lesson  = Lamp::Lesson.create git_url, lesson_path, opts
             payload = lesson.public_paths.dup
-            payload[:problems] = lesson.problems
+            payload[:problems] = lesson.problems.map do |p|
+              { digest: Base64.urlsafe_encode64(p[:digest]),
+                solution: Base64.urlsafe_encode64(p[:solution]) }
+            end
           rescue Error => e
             post_failure lesson_path, url, e
           else
@@ -157,13 +160,11 @@ module Lamp
       end
 
       def post_success(lesson_path, url, payload)
-        # Net::HTTP.post_form(URI(url), { status: 200, payload: payload })
         Faraday.post url, { status: 200, payload: payload }
         log_success lesson_path
       end
 
       def post_failure(lesson_path, url, e)
-        # Net::HTTP.post_form(URI(url), { status: 403, message: e.message })
         Faraday.post url, { status: 403, message: e.message }
         log_failure lesson_path
       end
