@@ -4,6 +4,7 @@ require 'bundler/capistrano'
 set :application, 'genie-compiler'
 set :repository,  'git@github.com:jimjh/genie-compiler.git'
 set :user,        'passenger'
+set :default_shell, '/bin/bash -l'
 
 set :scm,        :git
 set :deploy_via, :remote_cache
