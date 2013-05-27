@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:jimjh/genie-parser.git
-  revision: 941a235c43e660ca30649e921838c46028a8c1a0
+  revision: 73cb022438e70aa426d0e542753f4ff62a79c7cd
   branch: master
   specs:
     spirit (0.2)
@@ -60,7 +60,7 @@ GEM
     mime-types (1.23)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
-    multi_json (1.7.3)
+    multi_json (1.7.4)
     multipart-post (1.2.0)
     nokogiri (1.5.9)
     posix-spawn (0.3.6)
