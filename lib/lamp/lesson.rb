@@ -88,6 +88,14 @@ module Lamp
         solution_path: solution_path }
     end
 
+    def title
+      @manifest[:title]
+    end
+
+    def description
+      @manifest[:description]
+    end
+
     private
 
     path_reader :source, :compiled, :solution

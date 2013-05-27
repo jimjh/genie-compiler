@@ -119,6 +119,8 @@ module Lamp
               { digest: Base64.urlsafe_encode64(p[:digest]),
                 solution: Base64.urlsafe_encode64(p[:solution]) }
             end
+            payload[:title] = lesson.title
+            payload[:description] = lesson.description
           rescue Error => e
             post_failure lesson_path, url, e
           else
