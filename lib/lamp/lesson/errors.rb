@@ -5,7 +5,7 @@ module Lamp
 
     # Raised if the given lesson repository does not contain the required files.
     class InvalidLessonError < Error
-      attr_accessor :errors
+      attr_reader :errors
       def initialize(errors)
         @errors = errors
       end

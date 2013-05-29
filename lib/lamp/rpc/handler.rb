@@ -73,7 +73,7 @@ module Lamp
         Lamp.logger.debug { log_caller(5) + ' -> ' + args.join }
       end
 
-      def log_failure
+      def log_failure(*args)
         Lamp.logger.warn { log_caller(5) + ' x> ' + args.join }
       end
 

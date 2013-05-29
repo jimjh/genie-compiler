@@ -76,12 +76,12 @@ module Lamp
     # @raise [InvalidLessonError] if the repository doesn't contain a valid
     #   manifest and index file.
     def initialize(repo, name)
-      @repo, @name, @problems, @errors = repo, name, [], []
+      @repo, @name, @problems, @errors = repo, name, [], {}
       raise InvalidLessonError, errors unless valid?
       mf = File.expand_path Spirit::MANIFEST, repo.working_dir
       @manifest = Spirit::Manifest.load_file mf
     rescue Spirit::ManifestError => e
-      errors << [:manifest, 'lesson.lamp.syntax', e.message]
+      errors[:manifest] = ['lesson.lamp.syntax', e.message]
       raise InvalidLessonError, errors
     end
 
@@ -110,7 +110,7 @@ module Lamp
       [[Spirit::MANIFEST, :manifest], [Spirit::INDEX, :index]].reduce(true) do |memo, pair|
         subpath, key = *pair
         valid = Actions.check_file? File.expand_path(subpath, repo.working_dir)
-        errors << [key, 'lesson.lamp.missing'] unless valid
+        errors[key] = ['lesson.lamp.missing'] unless valid
         memo and valid
       end
     end

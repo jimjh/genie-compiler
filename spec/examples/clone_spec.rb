@@ -68,7 +68,7 @@ describe Lamp::Lesson  do
         it 'raises an InvalidLessonError' do
           expect { clone }.to raise_error { |e|
             e.should be_a Lamp::Lesson::InvalidLessonError
-            e.errors.should eq [[:index, 'lesson.lamp.missing']]
+            e.errors.should eq(index: ['lesson.lamp.missing'])
           }
         end
       end
@@ -78,7 +78,7 @@ describe Lamp::Lesson  do
         it 'raises an InvalidLessonError' do
           expect { clone }.to raise_error { |e|
             e.should be_a Lamp::Lesson::InvalidLessonError
-            e.errors.should eq [[:manifest, 'lesson.lamp.missing']]
+            e.errors.should eq(manifest:  ['lesson.lamp.missing'])
           }
         end
       end
