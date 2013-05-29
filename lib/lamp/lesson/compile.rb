@@ -30,13 +30,16 @@ module Lamp
     # attacks in +@manifest[:static_paths]+.
     # @return [Pathname] path to compiled lesson
     def compile
-      Actions.directory compiled_path, force: true, mode: PERMISSIONS[:public_dir]
+      Actions.directory compiled_path, force: true,
+        mode: PERMISSIONS[:public_dir]
       Actions.directory solution_path, force: true
       sources = [Spirit::MANIFEST] + static_paths
       Actions.copy_secure source_path, compiled_path, sources,
         file_mode: PERMISSIONS[:public_file],
         dir_mode:  PERMISSIONS[:public_dir]
-      Pathname.glob(source_path + GLOB).each { |path| render path, compiled_path, problems }
+      Pathname.glob(source_path + GLOB).each { |path|
+        render path, compiled_path, problems
+      }
       compiled_path
     end
 

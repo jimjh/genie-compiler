@@ -121,7 +121,7 @@ module Lamp
             end
             payload[:title] = lesson.title
             payload[:description] = lesson.description
-          rescue Error => e
+          rescue Lamp::Error => e
             post_failure lesson_path, url, e
           else
             post_success lesson_path, url, payload
@@ -144,7 +144,7 @@ module Lamp
         async(callback) do |url|
           begin
             Lamp::Lesson.rm lesson_path
-          rescue Error => e
+          rescue Lamp::Error => e
             post_failure lesson_path, url, e
           else
             post_success lesson_path, url, {}
@@ -167,7 +167,12 @@ module Lamp
       end
 
       def post_failure(lesson_path, url, e)
-        Faraday.post url, { status: 403, message: e.message }
+        case e
+        when Lamp::Lesson::InvalidLessonError
+          Faraday.post url, { status: 422, errors: e.errors }
+        else
+          Faraday.post url, { status: 502, message: e.message }
+        end
         log_failure lesson_path
       end
 

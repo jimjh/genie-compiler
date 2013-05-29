@@ -68,7 +68,7 @@ module Lamp
 
     end
 
-    attr_reader :repo, :name, :problems
+    attr_reader :repo, :name, :problems, :errors
 
     # Creates a new lesson from the given repo and name.
     # @param [Grit::Repo] repo          git repository
@@ -76,11 +76,13 @@ module Lamp
     # @raise [InvalidLessonError] if the repository doesn't contain a valid
     #   manifest and index file.
     def initialize(repo, name)
-      @repo, @name, @problems = repo, name, []
-      manifest_file = File.expand_path Spirit::MANIFEST, repo.working_dir
-      Actions.check_file manifest_file
-      Actions.check_file File.expand_path(Spirit::INDEX, repo.working_dir)
-      @manifest = Spirit::Manifest.load_file manifest_file
+      @repo, @name, @problems, @errors = repo, name, [], []
+      raise InvalidLessonError, errors unless valid?
+      mf = File.expand_path Spirit::MANIFEST, repo.working_dir
+      @manifest = Spirit::Manifest.load_file mf
+    rescue Spirit::ManifestError => e
+      errors << [:manifest, 'lesson.lamp.syntax', e.message]
+      raise InvalidLessonError, errors
     end
 
     def public_paths
@@ -101,7 +103,16 @@ module Lamp
     path_reader :source, :compiled, :solution
 
     def static_paths
-      @manifest[:static_paths] || %w(images)
+      @manifest[:static_paths] || %w[images]
+    end
+
+    def valid?
+      [[Spirit::MANIFEST, :manifest], [Spirit::INDEX, :index]].reduce(true) do |memo, pair|
+        subpath, key = *pair
+        valid = Actions.check_file? File.expand_path(subpath, repo.working_dir)
+        errors << [key, 'lesson.lamp.missing'] unless valid
+        memo and valid
+      end
     end
 
   end

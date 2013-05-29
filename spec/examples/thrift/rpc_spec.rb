@@ -45,10 +45,17 @@ describe Lamp::RPC::Handler do
       subject.create(*args).join
     end
 
-    it 'fires the callback with status=403 on failure' do
+    it 'fires the callback with status=502 on failure' do
       Faraday.expects(:post).once
-        .with(callback, has_entry(:status, 403) & has_key(:message))
+        .with(callback, has_entry(:status, 502) & has_key(:message))
       Lamp::Lesson.expects(:create).raises(Lamp::Error)
+      subject.create(*args).join
+    end
+
+    it 'fires the callback with status=422 on InvalidLessonError' do
+      Faraday.expects(:post).once
+        .with(callback, has_entry(:status, 422) & has_key(:errors))
+      Lamp::Lesson.expects(:create).raises(Lamp::Lesson::InvalidLessonError, [])
       subject.create(*args).join
     end
 
@@ -58,7 +65,7 @@ describe Lamp::RPC::Handler do
 
     let(:name)     { 'jimjh/floating-point' }
     let(:callback) { 'http://localhost:1234/callback' }
-    let(:args)     { [name, callback ] }
+    let(:args)     { [ name, callback ] }
 
     it { should validate_presence_of(0, 'lesson_path').on(:remove).with(args) }
     it { should validate_presence_of(1, 'callback').on(:remove).with(args)    }
@@ -75,10 +82,10 @@ describe Lamp::RPC::Handler do
         subject.remove(*args).join
       end
 
-      it 'fires the callback with status=403 on failure' do
+      it 'fires the callback with status=502 on failure' do
         Lamp::Lesson.expects(:rm).raises(Lamp::Error)
         Faraday.expects(:post).once
-          .with(callback, has_entry(:status, 403) & has_key(:message))
+          .with(callback, has_entry(:status, 502) & has_key(:message))
         subject.remove(*args).join
       end
 

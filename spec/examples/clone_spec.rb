@@ -64,29 +64,23 @@ describe Lamp::Lesson  do
       end
 
       context 'with a missing index.md' do
-
-        before :each do
-          (@fake_repo + Spirit::INDEX).unlink
-          commit_all
+        before(:each) { (@fake_repo + Spirit::INDEX).unlink; commit_all }
+        it 'raises an InvalidLessonError' do
+          expect { clone }
+            .to raise_error Lamp::Lesson::InvalidLessonError do |e|
+              e.errors.should_not be_empty
+          end
         end
-
-        it 'raises a MissingIndexError' do
-          expect { clone }.to raise_error Lamp::Actions::FileError
-        end
-
       end
 
       context 'with a missing manifest' do
-
-        before :each do
-          (@fake_repo + Spirit::MANIFEST).unlink
-          commit_all
+        before(:each) { (@fake_repo + Spirit::MANIFEST).unlink; commit_all }
+        it 'raises an InvalidLessonError if the manifest is missing.' do
+          expect { clone }
+            .to raise_error Lamp::Lesson::InvalidLessonError do |e|
+              e.errors.should_not be_empty
+            end
         end
-
-        it 'raises a MissingManifestError if the manifest is missing.' do
-          expect { clone }.to raise_error Lamp::Actions::FileError
-        end
-
       end
 
       context 'and an existing lesson at the target path' do

@@ -8,12 +8,23 @@ module Lamp
 
     # Attempts to open file for reading at +path+.
     # @param [String|Pathname] path        path to file
+    # @raise [FileError] if the file is not readable or does not exist.
     # @return [void]
     def check_file(path)
       path = Pathname.new path unless path.is_a? Pathname
       not_found    path unless path.exist?
       not_readable path unless path.readable?
       Lamp.logger.record :read, path.basename
+    end
+
+    # Same as #check_file, but returns false instead of raising an exception if
+    # the file is unreadable or does not exist.
+    # @return [Boolean]
+    def check_file?(path)
+      Actions.check_file path
+    rescue FileError
+      false
+    else true
     end
 
     # Writes a file.

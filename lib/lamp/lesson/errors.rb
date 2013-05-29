@@ -4,7 +4,12 @@ module Lamp
   class Lesson
 
     # Raised if the given lesson repository does not contain the required files.
-    class InvalidLessonError < Error; end
+    class InvalidLessonError < Error
+      attr_accessor :errors
+      def initialize(errors)
+        @errors = errors
+      end
+    end
 
     # Raised if the worker is unable to obtain a lock on the lesson.
     class LockError < Error; end
