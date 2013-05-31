@@ -26,6 +26,6 @@ module Lamp
     private_file: 0600,
     shared_dir:   0750,
     shared_file:  0640
-  }
+  }.freeze
 
 end

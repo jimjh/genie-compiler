@@ -23,13 +23,6 @@ module Lamp
       ::Lamp.client args.shift, args, options
     end
 
-    def self.start(argv)
-      super
-    rescue Abort => e
-      ::Lamp.logger.error e.message
-      exit 1
-    end
-
   end
 
 end
