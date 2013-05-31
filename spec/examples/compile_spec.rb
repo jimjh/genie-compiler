@@ -49,17 +49,17 @@ describe Lamp::Lesson do
 
         it 'creates an output directory with public permissions' do
           compile
-          dest.should have_mode Lamp::PERMISSIONS[:public_dir]
+          dest.should have_mode_of :public_dir
         end
 
         it 'creates static directories with public permissions' do
           compile
-          (dest + 'img').should have_mode Lamp::PERMISSIONS[:public_dir]
+          (dest + 'img').should have_mode_of :public_dir
         end
 
         it 'creates files with public permissions' do
           compile
-          (dest + 'img' + 'x').should have_mode Lamp::PERMISSIONS[:public_file]
+          (dest + 'img' + 'x').should have_mode_of :public_file
         end
 
         it 'copies static assets to target directory' do
@@ -98,8 +98,8 @@ describe Lamp::Lesson do
 
         it 'creates html files with public permissions' do
           compile
-          x.should have_mode(Lamp::PERMISSIONS[:public_file])
-          y.should have_mode(Lamp::PERMISSIONS[:public_file])
+          x.should have_mode_of :public_file
+          y.should have_mode_of :public_file
         end
 
       end

@@ -1,8 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
 module Test
-
   module Matchers
-
     class Mode
 
       attr_reader :mode
@@ -35,10 +33,13 @@ module Test
 
     end
 
-    def have_mode(mode)
-      Mode.new mode
+    def have_mode(type)
+      Mode.new type
+    end
+
+    def have_mode_of(type)
+      Mode.new Lamp::PERMISSIONS[type]
     end
 
   end
-
 end

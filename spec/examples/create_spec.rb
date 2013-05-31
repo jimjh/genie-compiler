@@ -10,17 +10,19 @@ describe Lamp::Lesson do
 
       include_context 'lesson repo'
       let(:name) { SecureRandom.uuid }
+      subject { Lamp::Lesson.create url, name }
 
-      it 'clones, compiles, and cleans' do
-        lesson = Lamp::Lesson.create url, name
-        Lamp::Lesson.source_path(name).should_not be_exist
-        Lamp::Lesson.compiled_path(name).should be_exist
-      end
+      its(:source_path) { should_not be_exist }
+      its(:compiled_path) { should be_exist }
 
     end
 
-    it 'raises an error if create is given an unsafe name' do
-      expect { Lamp::Lesson.create 'x', '../jimjh/x' }.to raise_error Lamp::Lesson::NameError
+    context 'given an unsafe name' do
+      let(:name) { '../jimjh/x' }
+      it 'raises an error' do
+        expect { Lamp::Lesson.create 'x', name}.to raise_error \
+          Lamp::Lesson::NameError
+      end
     end
 
   end

@@ -4,31 +4,44 @@ require 'lamp/lesson'
 
 describe Lamp::Lesson do
 
-  it 'responds to various path getters (both class and instance)'
-  it 'responds to public_paths'
-  it 'responds to in_repo'
-  it 'defaults the values to what is defined in config.rb'
-  it 'responds to title, description, and static_paths'
+  context 'given a cloned lesson' do
 
-  # already invoked by global context
+    include_context 'lesson repo'
+    let(:name) { 'test_lesson' }
+    let(:lesson) { clone_lesson name }
+    subject { lesson }
+
+    its(:solution_path) { should eq Pathname.new(Lamp.root)+'solution'+name }
+    its(:compiled_path) { should eq Pathname.new(Lamp.root)+'compiled'+name }
+    its(:source_path) { should eq Pathname.new(Lamp.root)+'source'+name }
+    its(:lock_path) { should eq Pathname.new(Lamp.root)+'lock'+name }
+
+    its(:public_paths) { should have_key :compiled_path }
+    its(:public_paths) { should have_key :solution_path }
+
+    its(:title) { should eq Lamp::DEFAULT_MANIFEST[:title] }
+    its(:description) { should eq Lamp::DEFAULT_MANIFEST[:description] }
+    its(:static_paths) { should eq Lamp::DEFAULT_MANIFEST[:static_paths] }
+
+    describe '#in_repo' do
+      it 'returns absolute paths to files in the repository' do
+        lesson.in_repo('x').should eq File.join(lesson.source_path, 'x')
+      end
+    end
+
+  end
+
+  # method already invoked by global context
   describe '::prepare_directories' do
-
-    it 'created `compiled` with public permissions' do
-      Lamp::Lesson.compiled_path.should have_mode Lamp::PERMISSIONS[:public_dir]
-    end
-
-    it 'created `lock` with private permissions' do
-      Lamp::Lesson.lock_path.should     have_mode Lamp::PERMISSIONS[:private_dir]
-    end
-
-    it 'created `source` with private permissions' do
-      Lamp::Lesson.source_path.should   have_mode Lamp::PERMISSIONS[:private_dir]
-    end
-
-    it 'created `solution` with shared permissions' do
-      Lamp::Lesson.solution_path.should have_mode Lamp::PERMISSIONS[:shared_dir]
-    end
-
+    subject { Lamp::Lesson }
+    its(:compiled_path) { should have_mode_of :public_dir }
+    its(:compiled_path) { should eq Pathname.new(Lamp.root)+'compiled' }
+    its(:lock_path) { should have_mode_of :private_dir }
+    its(:lock_path) { should eq Pathname.new(Lamp.root)+'lock' }
+    its(:source_path) { should have_mode_of :private_dir }
+    its(:source_path) { should eq Pathname.new(Lamp.root)+'source' }
+    its(:solution_path) { should have_mode_of :shared_dir }
+    its(:solution_path) { should eq Pathname.new(Lamp.root)+'solution' }
   end
 
 end

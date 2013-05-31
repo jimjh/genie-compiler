@@ -8,17 +8,21 @@ shared_context 'lesson repo' do
   end
 
   def commit_all
-    silence @fake_repo, <<-eos
+    silence repo, <<-eos
       git add .
       git ci --allow-empty -am 'test'
     eos
   end
 
-  let(:url) { (@fake_repo + '.git').to_s }
+  def clone_lesson(name='test', opts={})
+    Lamp::Lesson.clone_from url, name, opts
+  end
+
+  let(:url)  { (repo + '.git').to_s }
+  let(:repo) { Pathname.new Dir.mktmpdir }
 
   before(:each) do
-    @fake_repo = Pathname.new Dir.mktmpdir
-    silence @fake_repo, <<-eos
+    silence repo, <<-eos
       git init
       echo {} > #{Spirit::MANIFEST} && git add #{Spirit::MANIFEST}
       touch #{Spirit::INDEX} && git add #{Spirit::INDEX}
@@ -26,6 +30,6 @@ shared_context 'lesson repo' do
     eos
   end
 
-  after(:each) { FileUtils.remove_entry_secure @fake_repo }
+  after(:each) { FileUtils.remove_entry_secure repo }
 
 end

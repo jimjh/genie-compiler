@@ -9,44 +9,35 @@ describe Lamp::Lesson do
     context 'given a lesson name' do
 
       include_context 'lesson repo'
-      let(:name) { 'test' }
-
-      before(:each) { @lesson = Lamp::Lesson.clone_from url, name }
+      let(:name)   { 'test_lesson' }
+      let(:lesson) { clone_lesson name }
+      subject { lesson }
 
       context 'after compile' do
-
-        before(:each) { @lesson.compile }
-
-        it 'removes the source and compiled directories' do
-          expect { @lesson.rm }.to_not raise_error
-          Lamp::Lesson.source_path(name).should_not be_exist
-          Lamp::Lesson.compiled_path(name).should_not be_exist
-        end
-
+        before(:each) { lesson.compile; lesson.rm }
+        its(:source_path) { should_not be_exist }
+        its(:compiled_path) { should_not be_exist }
+        its(:solution_path) { should_not be_exist }
       end
 
       context 'before compile' do
-
-        it 'does not raise an error' do
-          expect { @lesson.rm }.to_not raise_error
-          Lamp::Lesson.source_path(name).should_not be_exist
-          Lamp::Lesson.compiled_path(name).should_not be_exist
-        end
-
+        before(:each) { lesson.rm }
+        its(:source_path) { should_not be_exist }
+        its(:compiled_path) { should_not be_exist }
+        its(:solution_path) { should_not be_exist }
       end
 
       it 'does not raises an error if the specified lesson does not exist' do
         expect { Lamp::Lesson::rm 'x' }.to_not raise_error
       end
 
-      it 'does not raise an error if the specified lesson exists' do
-        expect { Lamp::Lesson::rm name }.to_not raise_error
-      end
+    end
 
-      it 'raises an error if remove is given an unsafe name' do
-        expect { Lamp::Lesson.rm '../jimjh/x' }.to raise_error Lamp::Lesson::NameError
+    context 'given an unsafe lesson name' do
+      let(:name) { '../jimjh/x' }
+      it 'raises an error' do
+        expect { Lamp::Lesson.rm name }.to raise_error Lamp::Lesson::NameError
       end
-
     end
 
   end

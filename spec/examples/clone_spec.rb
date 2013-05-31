@@ -24,8 +24,8 @@ describe Lamp::Lesson  do
 
       include_context 'lesson repo'
 
-      let(:master) { Grit::Repo.new(@fake_repo).get_head('master').commit.id }
-      let(:commit) { Grit::Repo.new(@fake_repo).head.commit.id }
+      let(:master) { Grit::Repo.new(repo).get_head('master').commit.id }
+      let(:commit) { Grit::Repo.new(repo).head.commit.id }
 
       def clone(opts={})
         @lesson = Lamp::Lesson.clone_from url, 'test', opts
@@ -36,7 +36,7 @@ describe Lamp::Lesson  do
       shared_examples 'clone directory permissions' do
         it 'creates a private directory' do
           dir = Pathname.new clone.repo.working_dir
-          dir.should have_mode(Lamp::PERMISSIONS[:private_dir])
+          dir.should have_mode_of :private_dir
         end
       end
 
@@ -49,7 +49,7 @@ describe Lamp::Lesson  do
       context 'with a specified branch' do
 
         before :each do
-          silence @fake_repo, <<-eos
+          silence repo, <<-eos
             git co -b x
             git ci --allow-empty -am 'branch'
           eos
@@ -64,7 +64,7 @@ describe Lamp::Lesson  do
       end
 
       context 'with a missing index.md' do
-        before(:each) { (@fake_repo + Spirit::INDEX).unlink; commit_all }
+        before(:each) { (repo + Spirit::INDEX).unlink; commit_all }
         it 'raises an InvalidLessonError' do
           expect { clone }.to raise_error { |e|
             e.should be_a Lamp::Lesson::InvalidLessonError
@@ -74,7 +74,7 @@ describe Lamp::Lesson  do
       end
 
       context 'with a missing manifest' do
-        before(:each) { (@fake_repo + Spirit::MANIFEST).unlink; commit_all }
+        before(:each) { (repo + Spirit::MANIFEST).unlink; commit_all }
         it 'raises an InvalidLessonError' do
           expect { clone }.to raise_error { |e|
             e.should be_a Lamp::Lesson::InvalidLessonError

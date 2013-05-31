@@ -3,9 +3,11 @@ module Lamp
     module Map
 
       def map(*attrs, opts)
-        sym = opts[:to]
-        raise ArgumentError, 'You need to give :to as option to map' unless sym
-        attrs.each { |attr| define_method(attr) { public_send(:sym)[attr] } }
+        v = opts[:to]
+        raise ArgumentError, 'You need to give :to as option to map' unless v
+        attrs.each do |attr|
+          define_method(attr) { instance_variable_get("@#{v}")[attr] }
+        end
       end
 
     end
