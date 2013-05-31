@@ -3,9 +3,12 @@ require 'json'
 require 'pathname'
 require 'spirit/constants'
 
+require 'lamp'
+require 'lamp/actions'
 require 'lamp/git'
 
 require 'lamp/lesson/errors'
+require 'lamp/lesson/helpers'
 require 'lamp/lesson/locks'
 require 'lamp/lesson/clone'
 require 'lamp/lesson/compile'
@@ -19,16 +22,9 @@ module Lamp
   class Lesson
 
     extend Actions
+    include Helpers::Paths
 
     class << self
-
-      %w[source compiled lock solution].each do |name|
-        m = (name.to_s + '_path').to_sym
-        define_method(m) do |*args|
-          subpath = args.first || '.'
-          Pathname.new(Lamp.root) + name + subpath
-        end
-      end
 
       # Ensures that the source and compiled directories exist.
       # @return [void]
@@ -41,17 +37,6 @@ module Lamp
       end
 
       private
-
-      # Dynamically defines getter methods for +source_path+, +compiled_path+
-      # etc.
-      # @param  [Array] names               array of path names
-      # @return [void]
-      def path_reader(*names)
-        names.each do |name|
-          m = (name.to_s + '_path').to_sym
-          define_method(m) { Lesson.public_send m, self.name }
-        end
-      end
 
       # Ensures that the given name is safe for use in a path.
       # @param [String] name
@@ -96,8 +81,6 @@ module Lamp
     end
 
     private
-
-    path_reader :source, :compiled, :solution
 
     def static_paths
       @manifest[:static_paths] || %w[images]

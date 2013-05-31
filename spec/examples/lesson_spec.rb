@@ -4,6 +4,7 @@ require 'lamp/lesson'
 
 describe Lamp::Lesson do
 
+  # already invoked by global context
   describe '::prepare_directories' do
 
     it 'created `compiled` with public permissions' do
