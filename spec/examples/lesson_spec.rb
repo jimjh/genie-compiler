@@ -4,6 +4,12 @@ require 'lamp/lesson'
 
 describe Lamp::Lesson do
 
+  it 'responds to various path getters (both class and instance)'
+  it 'responds to public_paths'
+  it 'responds to in_repo'
+  it 'defaults the values to what is defined in config.rb'
+  it 'responds to title, description, and static_paths'
+
   # already invoked by global context
   describe '::prepare_directories' do
 

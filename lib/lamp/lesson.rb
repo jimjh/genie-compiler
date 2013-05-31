@@ -22,35 +22,33 @@ module Lamp
   class Lesson
 
     extend Actions
+    extend Helpers::Map
     include Helpers::Paths
 
-    class << self
-
-      # Ensures that the source and compiled directories exist.
-      # @return [void]
-      def prepare_directories
-        directory compiled_path, mode: PERMISSIONS[:public_dir]
-        directory solution_path, mode: PERMISSIONS[:shared_dir]
-        [source_path, lock_path].each do |p|
-          directory p, mode: PERMISSIONS[:private_dir]
-        end
+    # Ensures that the source and compiled directories exist with the
+    # appropriate permissions.
+    # @return [void]
+    def self.prepare_directories
+      directory compiled_path, mode: PERMISSIONS[:public_dir]
+      directory solution_path, mode: PERMISSIONS[:shared_dir]
+      [source_path, lock_path].each do |p|
+        directory p, mode: PERMISSIONS[:private_dir]
       end
-
-      private
-
-      # Ensures that the given name is safe for use in a path.
-      # @param [String] name
-      # @raise [NameError] if the given name is not safe
-      def ensure_safe_name(name)
-        lesson_path = source_path name
-        unless descends_from? source_path, lesson_path
-          raise NameError.new '%s is not a safe name.' % name
-        end
-      end
-
     end
 
+    # Ensures that the given name is safe for use in a path.
+    # @param [String] name
+    # @raise [NameError] if the given name is not safe
+    def self.ensure_safe_name(name)
+      lesson_path = source_path name
+      unless descends_from? source_path, lesson_path
+        raise NameError, '%s is not a safe name.' % name, caller
+      end
+    end
+    private_class_method :ensure_safe_name
+
     attr_reader :repo, :name, :problems, :errors
+    map :title, :description, :static_paths, to: :manifest
 
     # Creates a new lesson from the given repo and name.
     # @param [Grit::Repo] repo          git repository
@@ -60,37 +58,20 @@ module Lamp
     def initialize(repo, name)
       @repo, @name, @problems, @errors = repo, name, [], {}
       raise InvalidLessonError, errors unless valid?
-      mf = File.expand_path Spirit::MANIFEST, repo.working_dir
-      @manifest = Spirit::Manifest.load_file mf
+      @manifest = Spirit::Manifest.load_file in_repo Spirit::MANIFEST
+      @manifest = DEFAULT_MANIFEST.dup.deep_merge @manifest
     rescue Spirit::ManifestError => e
       errors[:manifest] = ['lesson.lamp.syntax', e.message]
-      raise InvalidLessonError, errors
-    end
-
-    def public_paths
-      { compiled_path: compiled_path,
-        solution_path: solution_path }
-    end
-
-    def title
-      @manifest[:title]
-    end
-
-    def description
-      @manifest[:description]
+      raise InvalidLessonError, errors, caller
     end
 
     private
 
-    def static_paths
-      @manifest[:static_paths] || %w[images]
-    end
-
     def valid?
-      [[Spirit::MANIFEST, :manifest], [Spirit::INDEX, :index]].reduce(true) do |memo, pair|
-        subpath, key = *pair
-        valid = Actions.check_file? File.expand_path(subpath, repo.working_dir)
-        errors[key] = ['lesson.lamp.missing'] unless valid
+      [:manifest, :index].reduce(true) do |memo, type|
+        file  = Spirit.const_get type.upcase
+        valid = Actions.check_file? in_repo file
+        errors[type] = ['lesson.lamp.missing'] unless valid
         memo and valid
       end
     end

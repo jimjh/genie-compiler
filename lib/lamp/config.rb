@@ -28,4 +28,10 @@ module Lamp
     shared_file:  0640
   }.freeze
 
+  DEFAULT_MANIFEST = {
+    title: 'Untitled',
+    description: 'Undescribed',
+    static_paths: %w[images]
+  }.freeze
+
 end

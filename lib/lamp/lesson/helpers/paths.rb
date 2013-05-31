@@ -6,8 +6,20 @@ module Lamp
       extend ActiveSupport::Concern
 
       included do
+        private
         # add path readers for each path type
         path_reader :source, :compiled, :solution, :lock
+      end
+
+      # @return [Hash] hash containing the compiled path and solution path.
+      def public_paths
+        { compiled_path: compiled_path,
+          solution_path: solution_path }
+      end
+
+      # @return [String] absolute path to the given item in the repository.
+      def in_repo(subpath)
+        File.expand_path subpath, repo.working_dir
       end
 
       module ClassMethods
