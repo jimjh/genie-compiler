@@ -2,7 +2,7 @@
 require 'pathname'
 require 'thrift'
 
-require 'active_support/core_ext/hash'
+require 'active_support/core_ext/hash/deep_merge'
 require 'active_support/core_ext/module/attribute_accessors'
 
 require 'lamp/version'
@@ -14,9 +14,11 @@ module Lamp
 
   # Logger - configure using Lamp#reset_logger.
   mattr_reader :logger
+  @@logger = Logger.new LOG_FILE
 
   # Path to root directory - configure using Lamp#reset_root.
   mattr_reader :root
+  @@root = ROOT
 
   # @option opts [String] log-file  ({Lamp::LOG_FILE})
   # @option opts [String] log-level ({Lamp::LOG_LEVEL})

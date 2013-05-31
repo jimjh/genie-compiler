@@ -1,11 +1,11 @@
 # ~*~ encoding: utf-8 ~*~
+require 'pathname'
 require 'lamp/actions/file_actions'
 require 'lamp/actions/directory_actions'
 
 module Lamp
 
-  # lamp-actions module contains reusable actions for consistent side effects and
-  # logging.
+  # Contains reusable actions for consistent side effects and logging.
   module Actions
 
     extend self

@@ -20,9 +20,6 @@ module Lamp
 
     extend Actions
 
-    # Default options for public interface.
-    DEFAULTS    = { branch: 'master' }
-
     class << self
 
       %w[source compiled lock solution].each do |name|

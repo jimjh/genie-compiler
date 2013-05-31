@@ -30,7 +30,7 @@ module Lamp
       # so that it can be reused for {#create}
       def clone_from!(url, name, opts={})
         path = source_path name
-        repo = Git.clone_from url, path, DEFAULTS.merge(opts)
+        repo = Git.clone_from url, path, opts
         Lamp.logger.record :clone, url, '->', path.basename
         init_or_delete repo, name
       end
