@@ -1,4 +1,3 @@
-require 'rvm/capistrano'
 require 'bundler/capistrano'
 
 set :application, 'genie-compiler'
@@ -10,12 +9,11 @@ set :scm,        :git
 set :deploy_via, :remote_cache
 set :use_sudo,   false
 
-set :rvm_ruby_string, 'ruby-1.9.3-p362'
-set :rvm_type,        :system
-
 set :app_port, 3300
 
-role :app, 'beta.geniehub.org'
+# FIXME
+# role :app, 'beta.geniehub.org'
+role :app, 'ec2-54-225-0-30.compute-1.amazonaws.com'
 
 after 'deploy:restart', 'deploy:cleanup'
 after 'deploy:setup',   'deploy:upstart'
