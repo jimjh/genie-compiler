@@ -9,6 +9,7 @@ module Lamp
 
     class_option :'log-file',  type: :string,  default: nil
     class_option :'log-level', type: :numeric, default: LOG_LEVEL
+    class_option :'root',      type: :string,  default: nil
 
     desc 'server', 'start a RPC server'
     option :port, type: :numeric, default: PORT
