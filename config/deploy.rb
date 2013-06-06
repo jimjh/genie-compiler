@@ -11,9 +11,7 @@ set :use_sudo,   false
 
 set :app_port, 3300
 
-# FIXME
-# role :app, 'beta.geniehub.org'
-role :app, 'ec2-54-225-0-30.compute-1.amazonaws.com'
+role :app, 'beta.geniehub.org'
 
 after 'deploy:restart', 'deploy:cleanup'
 after 'deploy:setup',   'deploy:upstart'
