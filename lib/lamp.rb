@@ -1,6 +1,7 @@
 # ~*~ encoding: utf-8 ~*~
 require 'pathname'
 require 'thrift'
+require 'spirit'
 
 require 'active_support/core_ext/hash/deep_merge'
 require 'active_support/core_ext/module/attribute_accessors'
@@ -28,6 +29,7 @@ module Lamp
     @@logger.level = opts['log-level'] || LOG_LEVEL
     @@logger.formatter = Logger::Formatter.new
     @@logger.info "Lamp v#{VERSION}"
+    Spirit.reset_logger(opts['log-file'] || LOG_FILE)
   end
 
   # @option opts [String] path to root
