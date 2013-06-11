@@ -37,9 +37,7 @@ module Lamp
       Actions.copy_secure source_path, compiled_path, sources,
         file_mode: PERMISSIONS[:public_file],
         dir_mode:  PERMISSIONS[:public_dir]
-      Pathname.glob(source_path + GLOB).each { |path|
-        render path, compiled_path, problems
-      }
+      Pathname.glob(source_path + GLOB).each { |path| render path, compiled_path }
       compiled_path
     end
 
@@ -49,11 +47,14 @@ module Lamp
     # +destination+.
     # @param [Pathname] source            path to markdown source
     # @param [Pathname] destination       path to output directory
-    # @param [Array]    problems          container to collect problems
     # @return [Fixnum] number of bytes written
-    def render(source, destination, problems)
-      html = File.open(source, 'r:utf-8') { |f| Spirit::Document.new(f, problems: problems).render }
-      Actions.write_file destination + source.basename.sub_ext(EXT), html, 'w+', PERMISSIONS[:public_file]
+    def render(source, destination)
+      File.open source, 'r:utf-8' do |f|
+        document = Spirit::Document.new(f)
+        html = document.render
+        self.problems += document.solutions
+        Actions.write_file destination + source.basename.sub_ext(EXT), html, 'w+', PERMISSIONS[:public_file]
+      end
     end
 
   end

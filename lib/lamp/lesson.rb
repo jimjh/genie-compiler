@@ -47,7 +47,8 @@ module Lamp
     end
     private_class_method :ensure_safe_name
 
-    attr_reader :repo, :name, :problems, :errors
+    attr_reader :repo, :name, :errors
+    attr_accessor :problems
     map :title, :description, :static_paths, to: :manifest
 
     # Creates a new lesson from the given repo and name.
