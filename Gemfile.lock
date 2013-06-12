@@ -1,13 +1,13 @@
 GIT
   remote: git@github.com:jimjh/genie-parser.git
-  revision: d6677a6ed1db304a7975eac42e95593cc6876dbe
+  revision: 6bac1dd4008d567dd1eea26b44c23ce19ebaa31e
   branch: master
   specs:
     spirit (0.2)
       activesupport (~> 3.2)
-      albino (~> 1.3)
       haml (~> 4.0)
-      redcarpet (~> 2.2)
+      pygments.rb (~> 0.5)
+      redcarpet (~> 2.3)
       sanitize (~> 2.0)
 
 PATH
@@ -28,8 +28,6 @@ GEM
     activesupport (3.2.13)
       i18n (= 0.6.1)
       multi_json (~> 1.0)
-    albino (1.3.3)
-      posix-spawn (>= 0.3.6)
     coderay (1.0.9)
     columnize (0.3.6)
     debugger (1.6.0)
@@ -58,16 +56,21 @@ GEM
     metaclass (0.0.1)
     method_source (0.8.1)
     mime-types (1.23)
+    mini_portile (0.5.0)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
     multi_json (1.7.6)
     multipart-post (1.2.0)
-    nokogiri (1.5.9)
+    nokogiri (1.6.0)
+      mini_portile (~> 0.5.0)
     posix-spawn (0.3.6)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pygments.rb (0.5.0)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
     rake (10.0.4)
     redcarpet (2.3.0)
     rspec (2.13.0)
@@ -79,13 +82,14 @@ GEM
       diff-lcs (>= 1.1.3, < 2.0)
     rspec-instafail (0.2.4)
     rspec-mocks (2.13.1)
-    ruby-progressbar (1.1.0)
-    sanitize (2.0.3)
-      nokogiri (>= 1.4.4, < 1.6)
+    ruby-progressbar (1.1.1)
+    sanitize (2.0.4)
+      nokogiri (~> 1.6.0)
     slop (3.4.5)
     thor (0.18.1)
     thrift (0.9.0)
     tilt (1.4.1)
+    yajl-ruby (1.1.0)
     yard (0.8.6.1)
 
 PLATFORMS
@@ -96,6 +100,7 @@ DEPENDENCIES
   fuubar (~> 1.1)
   lamp!
   mocha (~> 0.10)
+  pygments.rb
   rake (~> 10.0)
   rspec (~> 2.12)
   spirit!
