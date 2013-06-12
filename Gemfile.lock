@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:jimjh/genie-parser.git
-  revision: 6bac1dd4008d567dd1eea26b44c23ce19ebaa31e
+  revision: d69e31bc3cd051d9ed078b30ced48b2fd76ba8d7
   branch: master
   specs:
-    spirit (0.2)
+    spirit (0.5)
       activesupport (~> 3.2)
       haml (~> 4.0)
       pygments.rb (~> 0.5)
@@ -13,7 +13,7 @@ GIT
 PATH
   remote: .
   specs:
-    lamp (0.2)
+    lamp (0.5)
       activesupport (~> 3.2)
       faraday (~> 0.8)
       grit (~> 2.5)
@@ -100,7 +100,6 @@ DEPENDENCIES
   fuubar (~> 1.1)
   lamp!
   mocha (~> 0.10)
-  pygments.rb
   rake (~> 10.0)
   rspec (~> 2.12)
   spirit!
