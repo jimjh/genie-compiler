@@ -45,10 +45,10 @@ module Lamp
     # @option opts [Fixum] dir_mode        UNIX permissions for directories
     # @return [Array] names
     def copy_secure(source, destination, names, opts={})
-      source, destination = to_path(source), to_path(destination)
+      source, destination = to_path(source).realpath, to_path(destination)
       names.each do |name|
-        path = (source + name).realpath
-        if Actions.descends_from? source, path and path.exist?
+        path = (source + name)
+        if path.exist? and Actions.descends_from? source, path.realpath
           Actions.copy path, destination, opts
         else Lamp.logger.record :ignore, path
         end
