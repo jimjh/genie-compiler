@@ -137,6 +137,19 @@ describe Lamp::Actions do
 
     end
 
+    context 'given a suspicious symlink' do
+      before :each do
+        @target = @src + '..' + 'x'
+        @link   = @src + 'x'
+        random_file @target
+        File.symlink(@target, @link)
+      end
+      it 'ignores the file' do
+        Lamp::Actions.copy_secure @src, @dst, ['x']
+        (@dst+'x').should_not be_exist
+      end
+    end
+
   end
 
   describe '#copy' do

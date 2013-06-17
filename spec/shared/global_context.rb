@@ -1,5 +1,6 @@
 # ~*~ encoding: utf-8 ~*~
 require 'lamp'
+require 'lamp/lesson'
 require 'rspec/core/shared_context'
 
 module Test

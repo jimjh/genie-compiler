@@ -6,7 +6,7 @@ module Lamp
   class Lesson
 
     # Glob used by Pathname to look for markdown sources.
-    GLOB        = '*.{md,markdown,mkd}'
+    GLOB      = '*.{md,markdown,mkd}'
 
     # File extension for render output.
     EXT       = '.inc'

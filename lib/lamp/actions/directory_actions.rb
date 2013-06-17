@@ -47,7 +47,7 @@ module Lamp
     def copy_secure(source, destination, names, opts={})
       source, destination = to_path(source), to_path(destination)
       names.each do |name|
-        path = source + name
+        path = (source + name).realpath
         if Actions.descends_from? source, path and path.exist?
           Actions.copy path, destination, opts
         else Lamp.logger.record :ignore, path
