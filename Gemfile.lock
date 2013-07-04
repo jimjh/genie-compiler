@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:jimjh/genie-parser.git
-  revision: d69e31bc3cd051d9ed078b30ced48b2fd76ba8d7
+  revision: d627c1c1cc07c0ea082a2599ee45cd7e7ba9c932
   branch: master
   specs:
     spirit (0.5)
@@ -38,7 +38,7 @@ GEM
     debugger-pry (0.1.1)
       debugger (~> 1)
       pry (>= 0.9.9)
-    debugger-ruby_core_source (1.2.2)
+    debugger-ruby_core_source (1.2.3)
     diff-lcs (1.2.4)
     faraday (0.8.7)
       multipart-post (~> 1.1)
@@ -59,7 +59,7 @@ GEM
     mini_portile (0.5.0)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
-    multi_json (1.7.6)
+    multi_json (1.7.7)
     multipart-post (1.2.0)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
@@ -68,10 +68,10 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
-    pygments.rb (0.5.0)
+    pygments.rb (0.5.1)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
-    rake (10.0.4)
+    rake (10.1.0)
     redcarpet (2.3.0)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
@@ -90,7 +90,7 @@ GEM
     thrift (0.9.0)
     tilt (1.4.1)
     yajl-ruby (1.1.0)
-    yard (0.8.6.1)
+    yard (0.8.6.2)
 
 PLATFORMS
   ruby
