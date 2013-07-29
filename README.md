@@ -1,7 +1,15 @@
-# genie-compiler
+# Genie
 
-The compiler is a service that shares a filesystem with the web server. It
-compiles lessons from their source files into a web-publishable format.
+Genie is an experimental platform for educators to publish and maintain lessons using Git hooks. It allows authors
+to describe problems using YAML and Markdown, and also tracks each student's performance.
+
+The project was started in Jan 2013 and paused on July 2013.
+
+Components include:
+- [genie-game](https://github.com/jimjh/genie-game), the Rails front-end
+- [genie-compiler](https://github.com/jimjh/genie-compiler), a Thrift RPC service that clones and compiles lessons
+- [genie-parser](https://github.com/jimjh/genie-parser), an extension of Redcarpet that parses lessons
+- [genie-tangle](https://github.com/jimjh/genie-tangle), a SSH proxy and VM pool manager
 
 ## Configuration
 Configuration options are available in `lib/lamp/config.rb`.
